@@ -171,16 +171,13 @@ export class ChatInterface {
         // Aggiungi il testo riconosciuto all'input
         this.userInput.set(text);
         
-        // Feedback positivo
-        this.messages.update(msgs => [...msgs, {
-          text: `✅ Ho capito: "${text}"`,
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'success'
-        }]);
+        // Conferma vocale rapida
+        this.speechService.speak(`Ho capito`);
         
-        // LEGGI ad alta voce quello che hai capito
-        this.speechService.speak(`Ho capito: ${text}`);
+        // INVIO AUTOMATICO dopo 1 secondo
+        setTimeout(() => {
+          this.sendMessage();
+        }, 1000);
       }
     } catch (error) {
       console.error('Errore riconoscimento vocale:', error);
@@ -192,7 +189,7 @@ export class ChatInterface {
       }]);
       
       // Leggi anche l'errore
-      this.speechService.speak(`Errore nel riconoscimento vocale. ${error}`);
+      this.speechService.speak(`Errore: ${error}`);
     }
   }
 }
