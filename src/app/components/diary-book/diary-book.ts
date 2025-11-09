@@ -118,28 +118,53 @@ export class DiaryBook {
   
   // Aggiorna contenuto
   updateContenuto(value: string) {
-    console.log('📝 Contenuto aggiornato:', value);
-    this.newEntry.update(entry => ({ ...entry, contenuto: value }));
+    console.log('⌨️ UPDATE CONTENUTO chiamato!');
+    console.log('⌨️ Valore ricevuto:', value);
+    console.log('⌨️ Tipo valore:', typeof value);
+    console.log('⌨️ Lunghezza:', value?.length);
+    
+    this.newEntry.update(entry => {
+      console.log('⌨️ Entry PRIMA update:', entry);
+      const updated = { ...entry, contenuto: value };
+      console.log('⌨️ Entry DOPO update:', updated);
+      return updated;
+    });
+    
+    console.log('⌨️ newEntry() FINALE:', this.newEntry());
   }
   
   // Salva entry
   saveEntry() {
-    console.log('💾 Tentativo salvataggio diario...');
+    console.log('💾 CLICK SU SALVA! Inizio salvataggio...');
     const entry = this.newEntry();
-    console.log('📝 Entry corrente:', entry);
+    console.log('📝 Entry corrente COMPLETA:', JSON.stringify(entry, null, 2));
+    console.log('📝 Contenuto entry:', entry.contenuto);
+    console.log('📝 Tipo contenuto:', typeof entry.contenuto);
+    console.log('📝 Lunghezza contenuto:', entry.contenuto?.length);
     
-    if (entry.contenuto && entry.contenuto.trim()) {
+    const contenuto = entry.contenuto || '';
+    console.log('📝 Contenuto dopo fallback:', contenuto);
+    console.log('📝 Trimmed:', contenuto.trim());
+    
+    if (contenuto && contenuto.trim()) {
       // SALVA DAVVERO NEL DIARIO!
-      const nuovaEntry = {
+      const nuovaEntry: DiarioEntry = {
         id: Date.now(),
         data: entry.data || new Date(),
-        contenuto: entry.contenuto,
+        contenuto: contenuto,
         umore: entry.umore || 'neutro',
         tags: entry.tags || []
       };
       
-      console.log('💾 Salvataggio entry:', nuovaEntry);
-      this.apiService.diario.update(diario => [...diario, nuovaEntry]);
+      console.log('💾 CREAZIONE nuova entry:', JSON.stringify(nuovaEntry, null, 2));
+      
+      this.apiService.diario.update(diario => {
+        console.log('📚 Diario PRIMA:', diario.length);
+        const newDiario = [...diario, nuovaEntry];
+        console.log('📚 Diario DOPO:', newDiario.length);
+        return newDiario;
+      });
+      
       console.log('✅ Diario aggiornato! Totale pagine:', this.apiService.diario().length);
       
       this.toastService.success(`✅ Pagina diario salvata! Totale: ${this.apiService.diario().length} pagine`);
@@ -151,8 +176,12 @@ export class DiaryBook {
         umore: 'neutro',
         tags: []
       });
+      
+      console.log('✅ SALVATAGGIO COMPLETATO!');
     } else {
-      console.warn('⚠️ Contenuto vuoto, impossibile salvare');
+      console.warn('⚠️ CONTENUTO VUOTO!');
+      console.warn('⚠️ entry.contenuto:', entry.contenuto);
+      console.warn('⚠️ contenuto var:', contenuto);
       this.toastService.warning('Scrivi qualcosa prima di salvare!');
     }
   }
