@@ -86,55 +86,11 @@
               </ng-template>
             </div>
 
-      <!-- Pagina scrittura -->
-      <div class="page right-page writing-page" *ngIf="isWriting()">
-        <div class="writing-form">
-          <div class="form-header">
-            <h4>{{ langService.t('diary.writeThought') }}</h4>
-            <span class="writing-date">{{ formatDate(formData) }}</span>
-          </div>
-
-          <div class="textarea-container">
-            <textarea
-              [(ngModel)]="formContenuto"
-              [placeholder]="langService.t('diary.placeholder')"
-              rows="12"
-              class="writing-textarea"
-            ></textarea>
-            
-            <button
-              *ngIf="speechService.isRecognitionSupported()"
-              (click)="dettaNelDiario()"
-              [disabled]="speechService.isListening()"
-              class="diary-mic-btn"
-              [class.listening]="speechService.isListening()"
-              title="Detta invece di scrivere"
-            >
-              <span *ngIf="!speechService.isListening()">🎤</span>
-              <span *ngIf="speechService.isListening()">🔴</span>
-            </button>
-          </div>
-
-          <div class="form-group">
-            <label>{{ langService.t('diary.howDoYouFeel') }}</label>
-            <div class="mood-selector">
-              <button
-                *ngFor="let mood of moods"
-                (click)="setMood(mood)"
-                [class.active]="formUmore === mood"
-                class="mood-btn"
-              >
-                {{ getMoodEmoji(mood) }}
-              </button>
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button (click)="cancelWriting()" class="btn-cancel">{{ langService.t('diary.cancel') }}</button>
-            <button (click)="saveEntry()" class="btn-save">
-              {{ langService.t('diary.save') }}
-            </button>
-          </div>
+      <!-- Pagina destra normale quando NON si scrive -->
+      <div class="page right-page" *ngIf="isWriting()">
+        <div class="empty-message">
+          <p>✍️</p>
+          <p>Scrivi nella modale...</p>
         </div>
       </div>
     </div>
@@ -157,5 +113,63 @@
     >
       {{ langService.t('diary.next') }}
     </button>
+  </div>
+</div>
+
+<!-- MODALE SCRITTURA SEPARATA (overlay completo) -->
+<div *ngIf="isWriting()" class="write-modal-overlay" (click)="cancelWriting()">
+  <div class="write-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ langService.t('diary.writeThought') }}</h3>
+      <button (click)="cancelWriting()" class="modal-close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="date-display">
+        📅 {{ formatDate(formData) }}
+      </div>
+
+      <textarea
+        [(ngModel)]="formContenuto"
+        [placeholder]="langService.t('diary.placeholder')"
+        class="modal-textarea"
+        rows="10"
+      ></textarea>
+
+      <div class="modal-mic-container" *ngIf="speechService.isRecognitionSupported()">
+        <button
+          (click)="dettaNelDiario()"
+          [disabled]="speechService.isListening()"
+          class="modal-mic-btn"
+          [class.listening]="speechService.isListening()"
+        >
+          <span *ngIf="!speechService.isListening()">🎤 Detta</span>
+          <span *ngIf="speechService.isListening()">🔴 Ascolto...</span>
+        </button>
+      </div>
+
+      <div class="mood-section">
+        <label>{{ langService.t('diary.howDoYouFeel') }}</label>
+        <div class="mood-buttons">
+          <button
+            *ngFor="let mood of moods"
+            (click)="setMood(mood)"
+            [class.selected]="formUmore === mood"
+            class="mood-option"
+          >
+            {{ getMoodEmoji(mood) }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button (click)="cancelWriting()" class="modal-btn-cancel">
+        {{ langService.t('diary.cancel') }}
+      </button>
+      <button (click)="saveEntry()" class="modal-btn-save">
+        {{ langService.t('diary.save') }}
+      </button>
+    </div>
   </div>
 </div>
