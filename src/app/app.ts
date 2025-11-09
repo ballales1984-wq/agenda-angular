@@ -11,19 +11,20 @@ import { CommunityFeed } from './components/community-feed/community-feed';
 import { PomodoroTimer } from './components/pomodoro-timer/pomodoro-timer';
 import { HabitsTracker } from './components/habits-tracker/habits-tracker';
 import { ObiettiviManager } from './components/obiettivi-manager/obiettivi-manager';
-import { MicrophoneTest } from './components/microphone-test/microphone-test';
+import { MoodAnalytics } from './components/mood-analytics/mood-analytics';
+import { SmartInsights } from './components/smart-insights/smart-insights';
 import { GlobalSearch } from './components/global-search/global-search';
 import { Toast } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, HabitsTracker, ObiettiviManager, MicrophoneTest, GlobalSearch, Toast],
+  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, HabitsTracker, ObiettiviManager, MoodAnalytics, SmartInsights, GlobalSearch, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   // Vista attiva
-  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'obiettivi' | 'mictest'>('chat');
+  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'obiettivi' | 'mood' | 'insights'>('chat');
   
   constructor(
     public themeService: ThemeService,
@@ -31,7 +32,7 @@ export class App {
   ) {}
   
   // Cambia vista
-  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'obiettivi' | 'mictest') {
+  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'obiettivi' | 'mood' | 'insights') {
     this.activeView.set(view);
   }
 }

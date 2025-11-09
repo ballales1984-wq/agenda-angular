@@ -1,0 +1,32 @@
+<div class="insights-container">
+  <div class="insights-header">
+    <h3>💡 Smart Insights</h3>
+    <p>L'AI analizza i tuoi pattern e ti suggerisce miglioramenti</p>
+  </div>
+
+  <!-- Lista insights -->
+  <div class="insights-grid">
+    <div 
+      *ngFor="let insight of insights()"
+      class="insight-card"
+      [class.positive]="insight.tipo === 'positivo'"
+      [class.warning]="insight.tipo === 'attenzione'"
+      [class.neutral]="insight.tipo === 'neutro'"
+    >
+      <div class="insight-icon">{{ insight.icona }}</div>
+      <div class="insight-content">
+        <h4>{{ insight.titolo }}</h4>
+        <p>{{ insight.descrizione }}</p>
+        <button *ngIf="insight.azione" class="insight-action">
+          {{ insight.azione }} →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="insights().length === 0" class="empty-state">
+    <p class="empty-icon">🤖</p>
+    <p>Usa l'app per qualche giorno per vedere insights personalizzati!</p>
+  </div>
+</div>

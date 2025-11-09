@@ -73,6 +73,20 @@
     >
       {{ langService.t('menu.stats') }}
     </button>
+    <button
+      (click)="setView('mood')"
+      [class.active]="activeView() === 'mood'"
+      class="nav-btn"
+    >
+      😊 Mood
+    </button>
+    <button
+      (click)="setView('insights')"
+      [class.active]="activeView() === 'insights'"
+      class="nav-btn"
+    >
+      💡 Insights
+    </button>
   </nav>
 
   <!-- Main Content -->
@@ -116,6 +130,16 @@
       <!-- Stats View -->
       <div *ngIf="activeView() === 'stats'" class="view-container">
         <app-stats-dashboard></app-stats-dashboard>
+      </div>
+
+      <!-- Mood Analytics View -->
+      <div *ngIf="activeView() === 'mood'" class="view-container">
+        <app-mood-analytics></app-mood-analytics>
+      </div>
+
+      <!-- Smart Insights View -->
+      <div *ngIf="activeView() === 'insights'" class="view-container">
+        <app-smart-insights></app-smart-insights>
       </div>
     </div>
   </main>
