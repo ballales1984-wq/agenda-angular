@@ -15,7 +15,13 @@
   </div>
 
   <!-- Libro aperto -->
-  <div class="book" [class.writing]="isWriting()">
+  <div 
+    class="book" 
+    [class.writing]="isWriting()"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+    (wheel)="onWheel($event)"
+  >
     <div class="book-pages">
       
       <!-- Pagina sinistra -->

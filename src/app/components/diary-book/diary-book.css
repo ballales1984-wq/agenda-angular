@@ -60,6 +60,14 @@
   max-width: 1000px;
   margin: 0 auto;
   perspective: 2000px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.book:active {
+  cursor: grabbing;
 }
 
 .book-pages {
@@ -72,11 +80,49 @@
     0 20px 60px rgba(0, 0, 0, 0.2),
     inset 0 0 20px rgba(0, 0, 0, 0.05);
   transform-style: preserve-3d;
-  transition: transform 0.6s ease;
+  transition: transform 0.3s ease;
+  position: relative;
 }
 
 .book-pages:hover {
   transform: rotateY(-2deg);
+}
+
+/* Animazione sfoglia pagina */
+.book.page-turning .book-pages {
+  animation: pageTurn 0.6s ease;
+}
+
+@keyframes pageTurn {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-10deg) scale(0.98);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Indicatore swipe per mobile */
+.book::before {
+  content: '← Swipe per sfogliare →';
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: #999;
+  font-style: italic;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (min-width: 769px) {
+  .book::before {
+    content: 'Usa la rotellina del mouse per sfogliare';
+  }
 }
 
 /* Pagine */

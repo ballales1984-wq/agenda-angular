@@ -30,6 +30,10 @@ export class DiaryBook {
   moods: Array<'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato'> = 
     ['felice', 'motivato', 'neutro', 'stressato', 'triste'];
   
+  // Touch/Swipe handling
+  private touchStartX = 0;
+  private touchEndX = 0;
+  
   constructor(
     public apiService: ApiService,
     public speechService: SpeechService
@@ -59,6 +63,7 @@ export class DiaryBook {
   // Pagina precedente
   previousPage() {
     if (this.hasPreviousPage()) {
+      this.addPageTurnAnimation();
       this.currentPage.update(p => Math.max(0, p - 2));
     }
   }
@@ -66,7 +71,19 @@ export class DiaryBook {
   // Pagina successiva
   nextPage() {
     if (this.hasNextPage()) {
+      this.addPageTurnAnimation();
       this.currentPage.update(p => p + 2);
+    }
+  }
+  
+  // Animazione sfoglia pagina
+  private addPageTurnAnimation() {
+    const bookElement = document.querySelector('.book');
+    if (bookElement) {
+      bookElement.classList.add('page-turning');
+      setTimeout(() => {
+        bookElement.classList.remove('page-turning');
+      }, 600);
     }
   }
   
@@ -135,6 +152,50 @@ export class DiaryBook {
     if (entry) {
       const text = `${this.formatDate(entry.data)}. ${entry.contenuto}`;
       this.speechService.speak(text);
+    }
+  }
+  
+  // ===== SWIPE & SCROLL HANDLING =====
+  
+  // Touch start
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.changedTouches[0].screenX;
+  }
+  
+  // Touch end - rileva swipe
+  onTouchEnd(event: TouchEvent) {
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+  
+  // Gestisci swipe
+  private handleSwipe() {
+    const swipeThreshold = 50; // pixel minimi per considerarlo swipe
+    const diff = this.touchStartX - this.touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left (verso sinistra) → Pagina successiva
+        this.nextPage();
+      } else {
+        // Swipe right (verso destra) → Pagina precedente
+        this.previousPage();
+      }
+    }
+  }
+  
+  // Scroll del mouse
+  onWheel(event: WheelEvent) {
+    // Previeni scroll normale della pagina
+    event.preventDefault();
+    
+    // Scroll down (ruota verso basso) → Pagina successiva
+    if (event.deltaY > 0) {
+      this.nextPage();
+    } 
+    // Scroll up (ruota verso alto) → Pagina precedente
+    else if (event.deltaY < 0) {
+      this.previousPage();
     }
   }
 }
