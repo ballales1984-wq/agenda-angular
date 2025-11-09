@@ -7,10 +7,11 @@ import { CalendarView } from './components/calendar-view/calendar-view';
 import { DiaryBook } from './components/diary-book/diary-book';
 import { StatsDashboard } from './components/stats-dashboard/stats-dashboard';
 import { CommunityFeed } from './components/community-feed/community-feed';
+import { Toast } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed],
+  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
