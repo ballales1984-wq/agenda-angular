@@ -22,7 +22,7 @@
   gap: 1rem;
 }
 
-.write-btn, .read-btn {
+.write-btn, .read-btn, .export-btn {
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -40,13 +40,22 @@
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
-.write-btn:hover, .read-btn:hover:not(:disabled) {
+.export-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.write-btn:hover, .read-btn:hover:not(:disabled), .export-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .read-btn:hover:not(:disabled) {
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.export-btn:hover {
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
 }
 
 .read-btn:disabled {

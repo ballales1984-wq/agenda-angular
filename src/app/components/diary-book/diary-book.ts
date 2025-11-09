@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { DiarioEntry } from '../../models/diario-entry';
 import { ApiService } from '../../services/api';
 import { SpeechService } from '../../services/speech';
+import { PdfExportService } from '../../services/pdf-export';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-diary-book',
@@ -36,7 +38,9 @@ export class DiaryBook {
   
   constructor(
     public apiService: ApiService,
-    public speechService: SpeechService
+    public speechService: SpeechService,
+    private pdfExportService: PdfExportService,
+    private toastService: ToastService
   ) {}
   
   // Computed per le pagine visibili
@@ -153,6 +157,18 @@ export class DiaryBook {
       const text = `${this.formatDate(entry.data)}. ${entry.contenuto}`;
       this.speechService.speak(text);
     }
+  }
+  
+  // Esporta diario in PDF
+  exportToPDF() {
+    const entries = this.apiService.diario();
+    if (entries.length === 0) {
+      this.toastService.warning('Il diario è vuoto! Nessun contenuto da esportare.');
+      return;
+    }
+    
+    this.pdfExportService.exportDiario(entries, '📖 Il Mio Diario');
+    this.toastService.success(`Diario esportato! ${entries.length} pagine salvate in PDF.`);
   }
   
   // ===== SWIPE & SCROLL HANDLING =====

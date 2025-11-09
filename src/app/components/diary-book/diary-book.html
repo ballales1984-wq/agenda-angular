@@ -3,6 +3,13 @@
     <h3>📖 Il Mio Diario</h3>
     <div class="diary-actions">
       <button 
+        (click)="exportToPDF()" 
+        class="export-btn"
+        title="Esporta tutto il diario in PDF"
+      >
+        📄 PDF
+      </button>
+      <button 
         (click)="readCurrentPage()" 
         class="read-btn"
         [disabled]="visibleEntries().length === 0"
