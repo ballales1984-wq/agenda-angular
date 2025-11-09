@@ -31,19 +31,24 @@
   >
     <div class="book-pages">
       
-      <!-- Pagina sinistra -->
-      <div class="page left-page" *ngIf="visibleEntries()[0]; else emptyLeft">
-        <div class="page-content">
-          <div class="page-header">
-            <span class="page-date">{{ formatDate(visibleEntries()[0].data) }}</span>
-            <span class="page-mood">{{ getMoodEmoji(visibleEntries()[0].umore) }}</span>
-          </div>
-          <div class="page-text">{{ visibleEntries()[0].contenuto }}</div>
-          <div class="page-tags" *ngIf="visibleEntries()[0]?.tags && visibleEntries()[0]?.tags?.length! > 0">
-            <span *ngFor="let tag of visibleEntries()[0]?.tags" class="tag">#{{ tag }}</span>
-          </div>
-        </div>
-      </div>
+            <!-- Pagina sinistra -->
+            <div class="page left-page" *ngIf="visibleEntries()[0]; else emptyLeft">
+              <div class="page-content">
+                <div class="page-header">
+                  <span class="page-date">{{ formatDate(visibleEntries()[0].data) }}</span>
+                  <span class="page-mood">{{ getMoodEmoji(visibleEntries()[0].umore) }}</span>
+                </div>
+                <div class="page-text">{{ visibleEntries()[0].contenuto }}</div>
+                <div class="page-tags" *ngIf="visibleEntries()[0]?.tags && visibleEntries()[0]?.tags?.length! > 0">
+                  <span *ngFor="let tag of visibleEntries()[0]?.tags" class="tag">#{{ tag }}</span>
+                </div>
+                <div class="page-share">
+                  <button (click)="condividiEntry(visibleEntries()[0])" class="share-btn">
+                    🔗 Condividi
+                  </button>
+                </div>
+              </div>
+            </div>
       <ng-template #emptyLeft>
         <div class="page left-page empty">
           <div class="empty-message">
@@ -56,25 +61,30 @@
       <!-- Divisore centrale -->
       <div class="book-spine"></div>
 
-      <!-- Pagina destra -->
-      <div class="page right-page" *ngIf="!isWriting()">
-        <div class="page-content" *ngIf="visibleEntries()[1]; else emptyRight">
-          <div class="page-header">
-            <span class="page-date">{{ formatDate(visibleEntries()[1].data) }}</span>
-            <span class="page-mood">{{ getMoodEmoji(visibleEntries()[1].umore) }}</span>
-          </div>
-          <div class="page-text">{{ visibleEntries()[1].contenuto }}</div>
-          <div class="page-tags" *ngIf="visibleEntries()[1]?.tags && visibleEntries()[1]?.tags?.length! > 0">
-            <span *ngFor="let tag of visibleEntries()[1]?.tags" class="tag">#{{ tag }}</span>
-          </div>
-        </div>
-        <ng-template #emptyRight>
-          <div class="empty-message">
-            <p>📝</p>
-            <p>Nessuna pagina qui</p>
-          </div>
-        </ng-template>
-      </div>
+            <!-- Pagina destra -->
+            <div class="page right-page" *ngIf="!isWriting()">
+              <div class="page-content" *ngIf="visibleEntries()[1]; else emptyRight">
+                <div class="page-header">
+                  <span class="page-date">{{ formatDate(visibleEntries()[1].data) }}</span>
+                  <span class="page-mood">{{ getMoodEmoji(visibleEntries()[1].umore) }}</span>
+                </div>
+                <div class="page-text">{{ visibleEntries()[1].contenuto }}</div>
+                <div class="page-tags" *ngIf="visibleEntries()[1]?.tags && visibleEntries()[1]?.tags?.length! > 0">
+                  <span *ngFor="let tag of visibleEntries()[1]?.tags" class="tag">#{{ tag }}</span>
+                </div>
+                <div class="page-share">
+                  <button (click)="condividiEntry(visibleEntries()[1])" class="share-btn">
+                    🔗 Condividi
+                  </button>
+                </div>
+              </div>
+              <ng-template #emptyRight>
+                <div class="empty-message">
+                  <p>📝</p>
+                  <p>Nessuna pagina qui</p>
+                </div>
+              </ng-template>
+            </div>
 
       <!-- Pagina scrittura -->
       <div class="page right-page writing-page" *ngIf="isWriting()">

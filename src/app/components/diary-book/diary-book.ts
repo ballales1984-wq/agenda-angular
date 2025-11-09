@@ -202,6 +202,91 @@ export class DiaryBook {
     }
   }
   
+  // CONDIVIDI ENTRY DEL DIARIO
+  async condividiEntry(entry: DiarioEntry) {
+    const shareUrl = `${window.location.origin}/#diary/${entry.id}`;
+    const shareText = `📖 Guarda questa riflessione dal mio Diario!\n\n"${entry.contenuto.substring(0, 100)}${entry.contenuto.length > 100 ? '...' : ''}"`;
+    
+    // Prova Web Share API (nativa su mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Riflessione dal Diario',
+          text: shareText,
+          url: shareUrl
+        });
+        this.toastService.success('✅ Condivisione completata!');
+        return;
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
+          // Utente ha annullato, non mostrare errore
+          return;
+        }
+        console.log('Web Share fallito, uso fallback');
+      }
+    }
+    
+    // Fallback: mostra opzioni social
+    const choice = confirm(
+      `🔗 Link creato!\n\n${shareUrl}\n\n` +
+      `Premi OK per copiare il link, o ANNULLA per aprire opzioni social.`
+    );
+    
+    if (choice) {
+      // Copia negli appunti
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        this.toastService.success('✅ Link copiato negli appunti!');
+      } catch (err) {
+        this.toastService.error('Errore copia link');
+      }
+    } else {
+      // Mostra opzioni social
+      this.mostraSocialOptions(shareUrl, shareText);
+    }
+  }
+  
+  // Mostra opzioni social per condivisione
+  private mostraSocialOptions(shareUrl: string, shareText: string) {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`;
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+    const emailUrl = `mailto:?subject=${encodeURIComponent('Riflessione dal mio Diario')}&body=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`;
+    
+    const socialChoice = prompt(
+      `Scegli dove condividere:\n\n` +
+      `1 - Twitter 🐦\n` +
+      `2 - WhatsApp 💬\n` +
+      `3 - Facebook 📘\n` +
+      `4 - Email 📧\n` +
+      `5 - Copia link 📋\n\n` +
+      `Digita il numero:`
+    );
+    
+    switch(socialChoice) {
+      case '1':
+        window.open(twitterUrl, '_blank');
+        break;
+      case '2':
+        window.open(whatsappUrl, '_blank');
+        break;
+      case '3':
+        window.open(facebookUrl, '_blank');
+        break;
+      case '4':
+        window.location.href = emailUrl;
+        break;
+      case '5':
+        navigator.clipboard.writeText(shareUrl);
+        this.toastService.success('✅ Link copiato!');
+        break;
+      default:
+        // Copia comunque il link
+        navigator.clipboard.writeText(shareUrl);
+        this.toastService.info('Link copiato negli appunti');
+    }
+  }
+  
   // ===== SWIPE & SCROLL HANDLING =====
   
   // Touch start
