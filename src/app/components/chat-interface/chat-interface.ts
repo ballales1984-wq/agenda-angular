@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api';
 import { SpeechService } from '../../services/speech';
+import { Spesa } from '../../models/spesa';
 
 interface ChatMessage {
   text: string;
@@ -113,14 +114,25 @@ export class ChatInterface {
         };
       } else if (lower.includes('speso') || lower.includes('spesa') || lower.includes('€') || lower.includes('euro') || lower.includes('pagato')) {
         const amountMatch = message.match(/(\d+)\s*€|€\s*(\d+)|(\d+)\s*euro/i);
-        const amount = amountMatch ? (amountMatch[1] || amountMatch[2] || amountMatch[3]) : '';
+        const amount = amountMatch ? parseInt(amountMatch[1] || amountMatch[2] || amountMatch[3]) : 0;
         
-        response = {
-          text: `💰 Spesa${amount ? ' di €' + amount : ''} registrata con successo! Vai su 📊 Statistiche per vedere i grafici delle spese.`,
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'success'
-        };
+        // SALVA DAVVERO LA SPESA!
+        if (amount > 0) {
+          const spesaCreata = this.addSpesaFromMessage(message, amount);
+          response = {
+            text: `💰 Spesa di €${amount} registrata con successo per "${spesaCreata.descrizione}"! Vai su 📊 Statistiche per vedere i grafici.`,
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'success'
+          };
+        } else {
+          response = {
+            text: `💰 Spesa registrata! Vai su 📊 Statistiche per vedere i grafici delle spese.`,
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'success'
+          };
+        }
       } else if (lower.includes('diario') || lower.includes('scrivi nel') || lower.includes('annota')) {
         // SALVA DAVVERO NEL DIARIO!
         const entryCreata = this.addDiarioFromMessage(message);
@@ -356,6 +368,52 @@ export class ChatInterface {
     
     return {
       preview: contenuto.substring(0, 50) + (contenuto.length > 50 ? '...' : '')
+    };
+  }
+  
+  // AGGIUNGE DAVVERO UNA SPESA
+  private addSpesaFromMessage(message: string, importo: number): any {
+    const lower = message.toLowerCase();
+    
+    // Estrai descrizione (rimuovi "speso", "€", numeri, etc.)
+    let descrizione = message;
+    descrizione = descrizione.replace(/speso|spesa|pagato|€|euro|\d+/gi, '').trim();
+    
+    // Se rimane poco, usa categorie default
+    if (descrizione.length < 3) {
+      descrizione = 'Spesa generica';
+    }
+    
+    // Determina categoria
+    let categoria: 'cibo' | 'trasporti' | 'intrattenimento' | 'salute' | 'altro' = 'altro';
+    
+    if (lower.includes('cibo') || lower.includes('spesa') || lower.includes('ristorante') || lower.includes('supermercato')) {
+      categoria = 'cibo';
+    } else if (lower.includes('benzina') || lower.includes('trasport') || lower.includes('taxi') || lower.includes('autobus')) {
+      categoria = 'trasporti';
+    } else if (lower.includes('cinema') || lower.includes('teatro') || lower.includes('gioco') || lower.includes('divertimento')) {
+      categoria = 'intrattenimento';
+    } else if (lower.includes('medico') || lower.includes('farmacia') || lower.includes('salute')) {
+      categoria = 'salute';
+    }
+    
+    // Determina se necessaria
+    const necessaria = lower.includes('necessaria') || lower.includes('importante') || categoria === 'cibo' || categoria === 'salute';
+    
+    // CREA LA SPESA
+    const nuovaSpesa: Spesa = {
+      id: Date.now(),
+      importo: importo,
+      categoria: categoria,
+      descrizione: descrizione,
+      data: new Date(),
+      necessaria: necessaria
+    };
+    
+    this.apiService.spese.update(spese => [...spese, nuovaSpesa]);
+    
+    return {
+      descrizione: descrizione
     };
   }
   
