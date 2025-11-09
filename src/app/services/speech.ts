@@ -126,7 +126,8 @@ export class SpeechService {
     if (SpeechRecognition) {
       this.recognition = new SpeechRecognition();
       this.recognition.continuous = false;
-      this.recognition.interimResults = false;
+      this.recognition.interimResults = true; // Mostra risultati intermedi
+      this.recognition.maxAlternatives = 1;
       this.recognition.lang = 'it-IT';
       
       this.recognition.onstart = () => {
@@ -148,26 +149,57 @@ export class SpeechService {
   startListening(lang: 'it' | 'en' = 'it'): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!this.recognition) {
-        reject('Riconoscimento vocale non supportato da questo browser');
+        reject('Riconoscimento vocale non supportato');
         return;
       }
       
       // Imposta lingua
       this.recognition.lang = lang === 'it' ? 'it-IT' : 'en-US';
       
+      // Timeout più lungo per dare tempo all'utente
+      let finalTranscript = '';
+      
       this.recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        resolve(transcript);
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        // Se abbiamo un risultato finale, resolvi
+        if (finalTranscript) {
+          resolve(finalTranscript.trim());
+        }
       };
       
       this.recognition.onerror = (event: any) => {
-        reject(event.error);
+        if (event.error === 'no-speech') {
+          reject('Non ho sentito niente. Parla più vicino al microfono e riprova!');
+        } else if (event.error === 'not-allowed') {
+          reject('Permesso microfono negato. Abilita il microfono nelle impostazioni del browser.');
+        } else {
+          reject(event.error);
+        }
+      };
+      
+      this.recognition.onnomatch = () => {
+        reject('Non ho capito. Riprova parlando più chiaramente!');
       };
       
       try {
         this.recognition.start();
-      } catch (e) {
-        reject(e);
+      } catch (e: any) {
+        if (e.message && e.message.includes('already started')) {
+          reject('Riconoscimento già attivo. Aspetta che finisca.');
+        } else {
+          reject(e);
+        }
       }
     });
   }
