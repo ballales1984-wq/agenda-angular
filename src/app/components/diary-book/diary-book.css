@@ -443,14 +443,22 @@
   background: #e0e0e0;
 }
 
+.btn-cancel:active {
+  transform: scale(0.98);
+}
+
 .btn-save {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .btn-save:hover:not(:disabled) {
-  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  filter: brightness(1.1);
+}
+
+.btn-save:active {
+  transform: scale(0.98);
 }
 
 .btn-save:disabled {
