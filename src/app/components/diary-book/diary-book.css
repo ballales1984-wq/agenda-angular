@@ -7,6 +7,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .diary-header h3 {
@@ -15,7 +17,12 @@
   margin: 0;
 }
 
-.write-btn {
+.diary-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.write-btn, .read-btn {
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -28,9 +35,24 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.write-btn:hover {
+.read-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.write-btn:hover, .read-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.read-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.read-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Libro 3D */

@@ -1,7 +1,17 @@
 <div class="diary-container">
   <div class="diary-header">
     <h3>📖 Il Mio Diario</h3>
-    <button (click)="startWriting()" class="write-btn">✍️ Scrivi Oggi</button>
+    <div class="diary-actions">
+      <button 
+        (click)="readCurrentPage()" 
+        class="read-btn"
+        [disabled]="visibleEntries().length === 0"
+        title="Leggi pagina ad alta voce"
+      >
+        🔊 Leggi
+      </button>
+      <button (click)="startWriting()" class="write-btn">✍️ Scrivi Oggi</button>
+    </div>
   </div>
 
   <!-- Libro aperto -->

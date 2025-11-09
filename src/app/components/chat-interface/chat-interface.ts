@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api';
+import { SpeechService } from '../../services/speech';
 
 interface ChatMessage {
   text: string;
@@ -35,7 +36,15 @@ export class ChatInterface {
     'Speso 50€ per spesa'
   ];
   
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    public speechService: SpeechService
+  ) {
+    // Leggi il messaggio di benvenuto
+    setTimeout(() => {
+      this.speechService.speak('Ciao! Sono il tuo assistente intelligente. Dimmi cosa vuoi fare oggi!');
+    }, 1000);
+  }
   
   // Invia messaggio
   sendMessage() {
@@ -103,6 +112,9 @@ export class ChatInterface {
       
       this.messages.update(msgs => [...msgs, response]);
       this.isLoading.set(false);
+      
+      // Leggi la risposta ad alta voce
+      this.speechService.speak(response.text);
       
       // Scroll to bottom
       setTimeout(() => this.scrollToBottom(), 100);

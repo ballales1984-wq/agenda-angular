@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DiarioEntry } from '../../models/diario-entry';
 import { ApiService } from '../../services/api';
+import { SpeechService } from '../../services/speech';
 
 @Component({
   selector: 'app-diary-book',
@@ -29,7 +30,10 @@ export class DiaryBook {
   moods: Array<'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato'> = 
     ['felice', 'motivato', 'neutro', 'stressato', 'triste'];
   
-  constructor(public apiService: ApiService) {}
+  constructor(
+    public apiService: ApiService,
+    public speechService: SpeechService
+  ) {}
   
   // Computed per le pagine visibili
   visibleEntries = computed(() => {
@@ -123,5 +127,14 @@ export class DiaryBook {
       month: 'long',
       day: 'numeric'
     });
+  }
+  
+  // Leggi pagina corrente
+  readCurrentPage() {
+    const entry = this.visibleEntries()[1] || this.visibleEntries()[0];
+    if (entry) {
+      const text = `${this.formatDate(entry.data)}. ${entry.contenuto}`;
+      this.speechService.speak(text);
+    }
   }
 }

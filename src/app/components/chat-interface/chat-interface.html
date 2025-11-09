@@ -1,7 +1,17 @@
 <div class="chat-container">
   <div class="chat-header">
-    <h3>💬 Chat Intelligente</h3>
-    <p>Scrivi in linguaggio naturale, penso a tutto io!</p>
+    <div class="chat-header-content">
+      <h3>💬 Chat Intelligente</h3>
+      <p>Scrivi in linguaggio naturale, penso a tutto io!</p>
+    </div>
+    <button 
+      class="voice-toggle"
+      (click)="speechService.toggle()"
+      [class.active]="speechService.isEnabled()"
+      [title]="speechService.isEnabled() ? 'Disattiva voce' : 'Attiva voce'"
+    >
+      {{ speechService.isEnabled() ? '🔊' : '🔇' }}
+    </button>
   </div>
 
   <div class="chat-messages">
@@ -20,9 +30,19 @@
         </div>
         <div class="message-bubble">
           <p>{{ msg.text }}</p>
-          <span class="message-time">
-            {{ msg.timestamp | date:'HH:mm' }}
-          </span>
+          <div class="message-footer">
+            <span class="message-time">
+              {{ msg.timestamp | date:'HH:mm' }}
+            </span>
+            <button 
+              *ngIf="msg.sender === 'assistant'"
+              (click)="speechService.speak(msg.text)"
+              class="speak-btn"
+              title="Leggi ad alta voce"
+            >
+              🔊
+            </button>
+          </div>
         </div>
       </div>
     </div>
