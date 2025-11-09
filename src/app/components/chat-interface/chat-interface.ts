@@ -178,6 +178,9 @@ export class ChatInterface {
           timestamp: new Date(),
           type: 'success'
         }]);
+        
+        // LEGGI ad alta voce quello che hai capito
+        this.speechService.speak(`Ho capito: ${text}`);
       }
     } catch (error) {
       console.error('Errore riconoscimento vocale:', error);
@@ -187,6 +190,9 @@ export class ChatInterface {
         timestamp: new Date(),
         type: 'error'
       }]);
+      
+      // Leggi anche l'errore
+      this.speechService.speak(`Errore nel riconoscimento vocale. ${error}`);
     }
   }
 }

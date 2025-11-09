@@ -22,7 +22,7 @@ import { Toast } from './components/toast/toast';
 })
 export class App {
   // Vista attiva
-  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits'>('chat');
+  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'mictest'>('chat');
   
   constructor(
     public themeService: ThemeService,
@@ -30,7 +30,7 @@ export class App {
   ) {}
   
   // Cambia vista
-  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits') {
+  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits' | 'mictest') {
     this.activeView.set(view);
   }
 }
