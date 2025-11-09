@@ -125,7 +125,7 @@ export class SpeechService {
     
     if (SpeechRecognition) {
       this.recognition = new SpeechRecognition();
-      this.recognition.continuous = false;
+      this.recognition.continuous = true; // Continuo - ascolta più a lungo
       this.recognition.interimResults = true; // Mostra risultati intermedi
       this.recognition.maxAlternatives = 1;
       this.recognition.lang = 'it-IT';
@@ -156,8 +156,9 @@ export class SpeechService {
       // Imposta lingua
       this.recognition.lang = lang === 'it' ? 'it-IT' : 'en-US';
       
-      // Timeout più lungo per dare tempo all'utente
+      // Raccolta testo con timeout più lungo
       let finalTranscript = '';
+      let silenceTimer: any = null;
       
       this.recognition.onresult = (event: any) => {
         let interimTranscript = '';
@@ -166,26 +167,50 @@ export class SpeechService {
           const transcript = event.results[i][0].transcript;
           
           if (event.results[i].isFinal) {
-            finalTranscript += transcript;
+            finalTranscript += transcript + ' ';
           } else {
             interimTranscript += transcript;
           }
         }
         
-        // Se abbiamo un risultato finale, resolvi
-        if (finalTranscript) {
-          resolve(finalTranscript.trim());
+        // Reset timer silenzio - continua ad ascoltare
+        if (silenceTimer) clearTimeout(silenceTimer);
+        
+        // Se c'è testo (finale o interim), aspetta 2 secondi di silenzio prima di finire
+        if (finalTranscript || interimTranscript) {
+          silenceTimer = setTimeout(() => {
+            if (this.recognition) {
+              this.recognition.stop();
+              if (finalTranscript) {
+                resolve(finalTranscript.trim());
+              }
+            }
+          }, 2000); // 2 secondi di silenzio = fine ascolto
         }
       };
       
       this.recognition.onerror = (event: any) => {
+        if (silenceTimer) clearTimeout(silenceTimer);
+        
         if (event.error === 'no-speech') {
           reject('Non ho sentito niente. Parla più vicino al microfono e riprova!');
         } else if (event.error === 'not-allowed') {
           reject('Permesso microfono negato. Abilita il microfono nelle impostazioni del browser.');
+        } else if (event.error === 'aborted') {
+          // Normale quando fermiamo manualmente
+          if (finalTranscript) {
+            resolve(finalTranscript.trim());
+          } else {
+            reject('Ascolto annullato');
+          }
         } else {
           reject(event.error);
         }
+      };
+      
+      this.recognition.onend = () => {
+        if (silenceTimer) clearTimeout(silenceTimer);
+        this.isListening.set(false);
       };
       
       this.recognition.onnomatch = () => {
@@ -194,6 +219,14 @@ export class SpeechService {
       
       try {
         this.recognition.start();
+        
+        // Timeout massimo di 30 secondi per sicurezza
+        setTimeout(() => {
+          if (this.recognition && this.isListening()) {
+            this.recognition.stop();
+          }
+        }, 30000);
+        
       } catch (e: any) {
         if (e.message && e.message.includes('already started')) {
           reject('Riconoscimento già attivo. Aspetta che finisca.');
