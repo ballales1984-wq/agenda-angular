@@ -269,6 +269,52 @@
   padding: 1.5rem;
   background: white;
   border-top: 1px solid #e0e0e0;
+  align-items: flex-end;
+}
+
+.mic-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #667eea;
+  background: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-btn:hover:not(:disabled) {
+  background: #667eea;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.mic-btn.listening {
+  background: #ef4444;
+  border-color: #ef4444;
+  animation: micPulse 1s infinite;
+}
+
+.mic-pulse {
+  animation: pulse 1s infinite;
+}
+
+@keyframes micPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+  }
+}
+
+.mic-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .chat-input textarea {
@@ -304,6 +350,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .send-btn:hover:not(:disabled) {

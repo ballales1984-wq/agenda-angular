@@ -4,9 +4,13 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class SpeechService {
-  // Stato della sintesi vocale
+  // Stato della sintesi vocale (Text-to-Speech)
   isSpeaking = signal(false);
   isEnabled = signal(true); // Attiva di default
+  
+  // Stato riconoscimento vocale (Speech-to-Text)
+  isListening = signal(false);
+  private recognition: any = null;
   
   // Voce selezionata
   private selectedVoice: SpeechSynthesisVoice | null = null;
@@ -21,6 +25,9 @@ export class SpeechService {
     if (saved !== null) {
       this.isEnabled.set(saved === 'true');
     }
+    
+    // Inizializza riconoscimento vocale
+    this.initRecognition();
   }
   
   private loadVoices() {
@@ -108,5 +115,73 @@ export class SpeechService {
   setRate(rate: number) {
     // Rate tra 0.1 e 10
     // Implementabile se necessario
+  }
+  
+  // ===== SPEECH-TO-TEXT (Riconoscimento Vocale) =====
+  
+  private initRecognition() {
+    // Verifica supporto browser
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      this.recognition = new SpeechRecognition();
+      this.recognition.continuous = false;
+      this.recognition.interimResults = false;
+      this.recognition.lang = 'it-IT';
+      
+      this.recognition.onstart = () => {
+        this.isListening.set(true);
+      };
+      
+      this.recognition.onend = () => {
+        this.isListening.set(false);
+      };
+      
+      this.recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        this.isListening.set(false);
+      };
+    }
+  }
+  
+  // Avvia ascolto (restituisce una Promise con il testo riconosciuto)
+  startListening(lang: 'it' | 'en' = 'it'): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!this.recognition) {
+        reject('Riconoscimento vocale non supportato da questo browser');
+        return;
+      }
+      
+      // Imposta lingua
+      this.recognition.lang = lang === 'it' ? 'it-IT' : 'en-US';
+      
+      this.recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        resolve(transcript);
+      };
+      
+      this.recognition.onerror = (event: any) => {
+        reject(event.error);
+      };
+      
+      try {
+        this.recognition.start();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  
+  // Ferma ascolto
+  stopListening() {
+    if (this.recognition) {
+      this.recognition.stop();
+      this.isListening.set(false);
+    }
+  }
+  
+  // Verifica se il riconoscimento vocale è supportato
+  isRecognitionSupported(): boolean {
+    return !!(window as any).SpeechRecognition || !!(window as any).webkitSpeechRecognition;
   }
 }

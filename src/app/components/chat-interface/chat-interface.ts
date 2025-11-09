@@ -141,4 +141,29 @@ export class ChatInterface {
       this.sendMessage();
     }
   }
+  
+  // ===== RICONOSCIMENTO VOCALE =====
+  
+  // Avvia ascolto vocale
+  async startVoiceInput() {
+    if (!this.speechService.isRecognitionSupported()) {
+      alert('Il riconoscimento vocale non è supportato dal tuo browser. Prova Chrome o Edge.');
+      return;
+    }
+    
+    try {
+      const text = await this.speechService.startListening('it');
+      
+      // Aggiungi il testo riconosciuto all'input
+      this.userInput.update(current => {
+        const newText = current ? current + ' ' + text : text;
+        return newText;
+      });
+      
+      // Opzionalmente invia subito
+      // this.sendMessage();
+    } catch (error) {
+      console.error('Errore riconoscimento vocale:', error);
+    }
+  }
 }

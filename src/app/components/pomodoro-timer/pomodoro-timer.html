@@ -1,0 +1,102 @@
+<div class="pomodoro-container">
+  <div class="pomodoro-header">
+    <h3>🍅 Pomodoro Timer</h3>
+    <p>Tecnica di produttività: 25 min lavoro + 5 min pausa</p>
+  </div>
+
+  <!-- Timer Circle -->
+  <div class="timer-circle-container">
+    <svg class="progress-ring" width="300" height="300">
+      <circle
+        class="progress-ring-bg"
+        stroke="#e0e0e0"
+        stroke-width="12"
+        fill="transparent"
+        r="140"
+        cx="150"
+        cy="150"
+      />
+      <circle
+        class="progress-ring-fill"
+        [attr.stroke]="getModeColor()"
+        stroke-width="12"
+        fill="transparent"
+        r="140"
+        cx="150"
+        cy="150"
+        [style.stroke-dasharray]="2 * Math.PI * 140"
+        [style.stroke-dashoffset]="2 * Math.PI * 140 * (1 - progressPercentage() / 100)"
+      />
+    </svg>
+    
+    <div class="timer-display">
+      <div class="timer-mode" [style.color]="getModeColor()">
+        {{ getModeLabel() }}
+      </div>
+      <div class="timer-time">
+        {{ formattedTime() }}
+      </div>
+      <div class="timer-count">
+        🍅 × {{ pomodoroCount() }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="timer-controls">
+    <button
+      (click)="toggleTimer()"
+      class="control-btn main-control"
+      [class.running]="isRunning()"
+    >
+      {{ isRunning() ? '⏸️ Pausa' : '▶️ Inizia' }}
+    </button>
+    
+    <button
+      (click)="reset()"
+      class="control-btn"
+      [disabled]="!isRunning() && timeLeft() === WORK_TIME"
+    >
+      🔄 Reset
+    </button>
+  </div>
+
+  <!-- Mode Selector -->
+  <div class="mode-selector">
+    <button
+      (click)="setMode('work')"
+      [class.active]="mode() === 'work'"
+      [disabled]="isRunning()"
+      class="mode-btn"
+    >
+      💼 Lavoro (25')
+    </button>
+    <button
+      (click)="setMode('shortBreak')"
+      [class.active]="mode() === 'shortBreak'"
+      [disabled]="isRunning()"
+      class="mode-btn"
+    >
+      ☕ Pausa (5')
+    </button>
+    <button
+      (click)="setMode('longBreak')"
+      [class.active]="mode() === 'longBreak'"
+      [disabled]="isRunning()"
+      class="mode-btn"
+    >
+      🌴 Pausa Lunga (15')
+    </button>
+  </div>
+
+  <!-- Info -->
+  <div class="pomodoro-info">
+    <h4>Come funziona:</h4>
+    <ul>
+      <li>🍅 1 Pomodoro = 25 minuti di lavoro concentrato</li>
+      <li>☕ Pausa breve di 5 minuti tra i pomodori</li>
+      <li>🌴 Pausa lunga di 15 minuti ogni 4 pomodori</li>
+      <li>🔔 Notifiche vocali e browser alla fine</li>
+    </ul>
+  </div>
+</div>

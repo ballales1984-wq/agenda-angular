@@ -75,13 +75,26 @@
   </div>
 
   <div class="chat-input">
+    <button
+      *ngIf="speechService.isRecognitionSupported()"
+      (click)="startVoiceInput()"
+      [disabled]="isLoading() || speechService.isListening()"
+      class="mic-btn"
+      [class.listening]="speechService.isListening()"
+      title="Parla invece di scrivere"
+    >
+      <span *ngIf="!speechService.isListening()">🎤</span>
+      <span *ngIf="speechService.isListening()" class="mic-pulse">🎤</span>
+    </button>
+    
     <textarea
       [(ngModel)]="userInput"
       (keypress)="onKeyPress($event)"
-      placeholder="Scrivi qualcosa... (es: 'Domani riunione alle 10')"
+      placeholder="Scrivi o parla... (es: 'Domani riunione alle 10')"
       rows="2"
       [disabled]="isLoading()"
     ></textarea>
+    
     <button 
       (click)="sendMessage()"
       [disabled]="!userInput() || isLoading()"

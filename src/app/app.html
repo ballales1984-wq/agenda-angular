@@ -46,6 +46,13 @@
       👥 Community
     </button>
     <button
+      (click)="setView('pomodoro')"
+      [class.active]="activeView() === 'pomodoro'"
+      class="nav-btn"
+    >
+      🍅 Pomodoro
+    </button>
+    <button
       (click)="setView('stats')"
       [class.active]="activeView() === 'stats'"
       class="nav-btn"
@@ -75,6 +82,11 @@
       <!-- Community View -->
       <div *ngIf="activeView() === 'community'" class="view-container">
         <app-community-feed></app-community-feed>
+      </div>
+
+      <!-- Pomodoro View -->
+      <div *ngIf="activeView() === 'pomodoro'" class="view-container">
+        <app-pomodoro-timer></app-pomodoro-timer>
       </div>
 
       <!-- Stats View -->
