@@ -1,0 +1,104 @@
+<div class="mic-test-container">
+  <div class="test-header">
+    <h3>🎤 Test Microfono</h3>
+    <p>Verifica se il microfono funziona correttamente</p>
+  </div>
+
+  <!-- Verifica Supporto -->
+  <div class="test-section">
+    <button (click)="checkSupport()" class="btn-check">
+      🔍 Verifica Supporto Browser
+    </button>
+  </div>
+
+  <!-- Test Livello Audio -->
+  <div class="test-section">
+    <h4>1️⃣ Test Livello Audio</h4>
+    <p>Controlla se il microfono rileva la tua voce</p>
+    
+    <div class="controls">
+      <button 
+        *ngIf="!isTestingMic()"
+        (click)="startMicTest()" 
+        class="btn-start"
+      >
+        🎤 Avvia Test Microfono
+      </button>
+      
+      <button 
+        *ngIf="isTestingMic()"
+        (click)="stopTest()" 
+        class="btn-stop"
+      >
+        ⏹️ Stop
+      </button>
+    </div>
+
+    <!-- Visualizzatore livello audio -->
+    <div *ngIf="isTestingMic()" class="audio-visualizer">
+      <div class="level-bar">
+        <div 
+          class="level-fill"
+          [style.width.%]="(audioLevel() / 128) * 100"
+          [class.speaking]="audioLevel() > 20"
+        ></div>
+      </div>
+      <div class="level-text">
+        Livello: {{ audioLevel() }}
+        <span *ngIf="audioLevel() > 20" class="speaking-indicator">🔊 RILEVO VOCE!</span>
+        <span *ngIf="audioLevel() <= 20" class="silent-indicator">🔇 Silenzio</span>
+      </div>
+      <p class="hint">📢 Parla al microfono e guarda la barra muoversi!</p>
+    </div>
+  </div>
+
+  <!-- Test Riconoscimento Vocale -->
+  <div class="test-section">
+    <h4>2️⃣ Test Riconoscimento Vocale</h4>
+    <p>Prova a dettare una frase</p>
+    
+    <button 
+      (click)="testSpeechRecognition()"
+      [disabled]="speechService.isListening()"
+      class="btn-test-speech"
+      [class.listening]="speechService.isListening()"
+    >
+      <span *ngIf="!speechService.isListening()">🎤 Inizia Dettatura</span>
+      <span *ngIf="speechService.isListening()">🔴 IN ASCOLTO - PARLA ORA!</span>
+    </button>
+    
+    <div *ngIf="recognizedText()" class="recognized-box">
+      <h5>✅ Testo Riconosciuto:</h5>
+      <p class="recognized-text">"{{ recognizedText() }}"</p>
+    </div>
+  </div>
+
+  <!-- Risultato -->
+  <div *ngIf="testResult()" class="result-box" [class.success]="testResult().startsWith('✅')" [class.error]="testResult().startsWith('❌')">
+    <p>{{ testResult() }}</p>
+  </div>
+
+  <!-- Istruzioni -->
+  <div class="instructions">
+    <h4>📖 Istruzioni:</h4>
+    <ol>
+      <li>✅ Usa <strong>Chrome</strong>, <strong>Edge</strong> o <strong>Safari</strong></li>
+      <li>✅ Abilita il <strong>permesso microfono</strong> quando richiesto</li>
+      <li>✅ Parla <strong>SUBITO</strong> dopo che il bottone diventa rosso</li>
+      <li>✅ Parla <strong>chiaramente</strong> e <strong>vicino</strong> al microfono</li>
+      <li>✅ NON fare <strong>pause lunghe</strong></li>
+      <li>✅ Ambiente <strong>silenzioso</strong></li>
+    </ol>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="troubleshooting">
+    <h4>🔧 Problemi?</h4>
+    <ul>
+      <li><strong>Errore "no-speech":</strong> Parla più velocemente appena diventa rosso</li>
+      <li><strong>Permesso negato:</strong> Click sull'icona 🎤 nella barra URL → Consenti</li>
+      <li><strong>Non funziona:</strong> Usa Chrome o Edge (Firefox non supportato)</li>
+      <li><strong>Barra non si muove:</strong> Controlla volume microfono in Windows</li>
+    </ul>
+  </div>
+</div>

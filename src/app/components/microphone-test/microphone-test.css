@@ -1,0 +1,279 @@
+.mic-test-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.test-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.test-header h3 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 0.5rem 0;
+}
+
+.test-header p {
+  color: #666;
+  margin: 0;
+}
+
+.test-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.test-section h4 {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+  font-size: 1.3rem;
+}
+
+.test-section p {
+  margin: 0 0 1.5rem 0;
+  color: #666;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-check, .btn-start, .btn-stop, .btn-test-speech {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.btn-stop {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.btn-test-speech {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 100%;
+}
+
+.btn-test-speech.listening {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  animation: pulse 1s infinite;
+}
+
+.btn-check:hover, .btn-start:hover, .btn-stop:hover, .btn-test-speech:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-test-speech:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Visualizzatore Audio */
+.audio-visualizer {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.level-bar {
+  height: 40px;
+  background: #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.level-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 50%, #ef4444 100%);
+  transition: width 0.1s ease;
+  border-radius: 20px;
+}
+
+.level-fill.speaking {
+  animation: levelPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes levelPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.level-text {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.speaking-indicator {
+  color: #10b981;
+  animation: blink 1s infinite;
+}
+
+.silent-indicator {
+  color: #999;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.hint {
+  text-align: center;
+  color: #999;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+/* Testo riconosciuto */
+.recognized-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #d4edda;
+  border-radius: 12px;
+  border-left: 4px solid #10b981;
+}
+
+.recognized-box h5 {
+  margin: 0 0 0.5rem 0;
+  color: #059669;
+}
+
+.recognized-text {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Result box */
+.result-box {
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.result-box.success {
+  background: #d4edda;
+  color: #059669;
+  border: 2px solid #10b981;
+}
+
+.result-box.error {
+  background: #f8d7da;
+  color: #dc2626;
+  border: 2px solid #ef4444;
+}
+
+.result-box p {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Instructions */
+.instructions, .troubleshooting {
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.instructions h4, .troubleshooting h4 {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+}
+
+.instructions ol, .troubleshooting ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #666;
+}
+
+.instructions li, .troubleshooting li {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+.instructions strong, .troubleshooting strong {
+  color: #667eea;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .test-header h3 {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .test-section {
+  background: #1e1e1e;
+}
+
+[data-theme="dark"] .test-section h4 {
+  color: #667eea;
+}
+
+[data-theme="dark"] .test-section p,
+[data-theme="dark"] .instructions li,
+[data-theme="dark"] .troubleshooting li {
+  color: #999;
+}
+
+[data-theme="dark"] .audio-visualizer {
+  background: #2c2c2c;
+}
+
+[data-theme="dark"] .level-bar {
+  background: #3a3a3a;
+}
+
+[data-theme="dark"] .level-text {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .instructions,
+[data-theme="dark"] .troubleshooting {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+  }
+  
+  .controls button {
+    width: 100%;
+  }
+}
+
