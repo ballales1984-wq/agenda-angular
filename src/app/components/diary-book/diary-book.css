@@ -214,6 +214,34 @@
   font-weight: 600;
 }
 
+/* Bottone condivisione */
+.page-share {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.share-btn:active {
+  transform: translateY(0);
+}
+
 /* Pagina vuota */
 .page.empty {
   display: flex;
