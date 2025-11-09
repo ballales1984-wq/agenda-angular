@@ -93,8 +93,6 @@ export class DiaryBook {
   
   // Apri modalità scrittura
   startWriting() {
-    console.log('✍️ Apertura form scrittura diario...');
-    
     // Reset form con variabili semplici
     this.formContenuto = '';
     this.formUmore = 'neutro';
@@ -102,26 +100,18 @@ export class DiaryBook {
     this.formTags = [];
     
     this.isWriting.set(true);
-    console.log('✍️ isWriting settato a:', this.isWriting());
-    console.log('✍️ Form resettato!');
     
     // Auto-focus sul textarea dopo un breve delay
     setTimeout(() => {
       const textarea = document.querySelector('.writing-textarea') as HTMLTextAreaElement;
       if (textarea) {
         textarea.focus();
-        console.log('✍️ Textarea focused!');
       }
     }, 100);
   }
   
   // Salva entry
   saveEntry() {
-    console.log('💾 CLICK SU SALVA! Inizio salvataggio...');
-    console.log('📝 formContenuto:', this.formContenuto);
-    console.log('📝 formUmore:', this.formUmore);
-    console.log('📝 Lunghezza:', this.formContenuto?.length);
-    
     const contenuto = this.formContenuto.trim();
     
     if (contenuto) {
@@ -134,23 +124,12 @@ export class DiaryBook {
         tags: this.formTags
       };
       
-      console.log('💾 CREAZIONE nuova entry:', nuovaEntry);
-      
-      this.apiService.diario.update(diario => {
-        console.log('📚 Diario PRIMA:', diario.length);
-        const newDiario = [...diario, nuovaEntry];
-        console.log('📚 Diario DOPO:', newDiario.length);
-        return newDiario;
-      });
-      
-      console.log('✅ Diario aggiornato! Totale pagine:', this.apiService.diario().length);
+      this.apiService.diario.update(diario => [...diario, nuovaEntry]);
       this.toastService.success(`✅ Pagina salvata! Totale: ${this.apiService.diario().length} pagine`);
       
       // Chiudi form
       this.isWriting.set(false);
-      console.log('✅ SALVATAGGIO COMPLETATO!');
     } else {
-      console.warn('⚠️ CONTENUTO VUOTO!');
       this.toastService.warning('Scrivi qualcosa prima di salvare!');
     }
   }
@@ -162,7 +141,6 @@ export class DiaryBook {
   
   // Imposta mood
   setMood(mood: 'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato') {
-    console.log('😊 Mood cambiato:', mood);
     this.formUmore = mood;
   }
   
@@ -211,24 +189,19 @@ export class DiaryBook {
   
   // DETTATURA NEL DIARIO
   async dettaNelDiario() {
-    console.log('🎤 Avvio dettatura diario...');
     this.toastService.info('🎤 In ascolto...');
     
     try {
       const text = await this.speechService.startListening('it');
-      console.log('🎤 Testo riconosciuto:', text);
       
       if (text && text.trim()) {
         // Aggiungi al contenuto esistente
         this.formContenuto = this.formContenuto ? this.formContenuto + ' ' + text : text;
-        console.log('✅ Testo aggiunto! Contenuto attuale:', this.formContenuto);
         this.toastService.success('✅ Testo aggiunto!');
       } else {
-        console.warn('⚠️ Nessun testo riconosciuto');
         this.toastService.warning('Nessun testo riconosciuto. Riprova!');
       }
     } catch (error) {
-      console.error('❌ Errore dettatura diario:', error);
       this.toastService.error(`Errore: ${error}`);
     }
   }
