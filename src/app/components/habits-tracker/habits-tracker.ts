@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Habit } from '../../models/habit';
 import { ToastService } from '../../services/toast';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-habits-tracker',
@@ -71,7 +72,10 @@ export class HabitsTracker {
     }
   ]);
   
-  constructor(private toastService: ToastService) {}
+  constructor(
+    private toastService: ToastService,
+    public langService: LanguageService
+  ) {}
   
   // Ultimi 7 giorni
   private getLast7Days(): Date[] {

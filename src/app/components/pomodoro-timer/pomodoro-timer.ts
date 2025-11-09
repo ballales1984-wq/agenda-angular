@@ -2,6 +2,7 @@ import { Component, signal, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpeechService } from '../../services/speech';
 import { ToastService } from '../../services/toast';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-pomodoro-timer',
@@ -28,7 +29,8 @@ export class PomodoroTimer implements OnDestroy {
   
   constructor(
     private speechService: SpeechService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    public langService: LanguageService
   ) {}
   
   ngOnDestroy() {

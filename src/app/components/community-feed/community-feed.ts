@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Post } from '../../models/post';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-community-feed',
@@ -68,6 +69,8 @@ export class CommunityFeed {
     tipo: 'motivazione' as 'obiettivo' | 'successo' | 'motivazione' | 'domanda',
     tags: [] as string[]
   });
+  
+  constructor(public langService: LanguageService) {}
   
   // Posts filtrati
   get postsFiltrati() {

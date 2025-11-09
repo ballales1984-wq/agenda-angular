@@ -1,6 +1,7 @@
 import { Component, computed, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api';
+import { LanguageService } from '../../services/language';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -14,7 +15,10 @@ Chart.register(...registerables);
 export class StatsDashboard implements AfterViewInit, OnDestroy {
   private charts: Chart[] = [];
   
-  constructor(public apiService: ApiService) {}
+  constructor(
+    public apiService: ApiService,
+    public langService: LanguageService
+  ) {}
   
   // Statistiche computed
   totalImpegni = computed(() => this.apiService.impegni().length);
