@@ -95,13 +95,16 @@ export class DiaryBook {
   
   // Apri modalità scrittura
   startWriting() {
+    console.log('✍️ Apertura form scrittura diario...');
     this.isWriting.set(true);
+    console.log('✍️ isWriting settato a:', this.isWriting());
     this.newEntry.set({
       data: new Date(),
       contenuto: '',
       umore: 'neutro',
       tags: []
     });
+    console.log('✍️ newEntry inizializzato:', this.newEntry());
   }
   
   // Aggiorna contenuto

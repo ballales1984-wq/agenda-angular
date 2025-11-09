@@ -142,7 +142,7 @@
   </div>
 
   <!-- Controlli navigazione -->
-  <div class="book-controls">
+  <div class="book-controls" *ngIf="!isWriting()">
     <button 
       (click)="previousPage()"
       [disabled]="!hasPreviousPage()"
