@@ -1,13 +1,13 @@
 <div class="diary-container">
   <div class="diary-header">
-    <h3>📖 Il Mio Diario</h3>
+    <h3>{{ langService.t('diary.title') }}</h3>
     <div class="diary-actions">
       <button 
         (click)="exportToPDF()" 
         class="export-btn"
         title="Esporta tutto il diario in PDF"
       >
-        📄 PDF
+        {{ langService.t('diary.export') }}
       </button>
       <button 
         (click)="readCurrentPage()" 
@@ -15,9 +15,9 @@
         [disabled]="visibleEntries().length === 0"
         title="Leggi pagina ad alta voce"
       >
-        🔊 Leggi
+        {{ langService.t('diary.read') }}
       </button>
-      <button (click)="startWriting()" class="write-btn">✍️ Scrivi Oggi</button>
+      <button (click)="startWriting()" class="write-btn">{{ langService.t('diary.write') }}</button>
     </div>
   </div>
 
@@ -44,19 +44,19 @@
                 </div>
                 <div class="page-share">
                   <button (click)="condividiEntry(visibleEntries()[0])" class="share-btn">
-                    🔗 Condividi
+                    {{ langService.t('diary.share') }}
                   </button>
                 </div>
               </div>
             </div>
-      <ng-template #emptyLeft>
-        <div class="page left-page empty">
-          <div class="empty-message">
-            <p>📝</p>
-            <p>Nessuna pagina qui</p>
-          </div>
-        </div>
-      </ng-template>
+              <ng-template #emptyLeft>
+                <div class="page left-page empty">
+                  <div class="empty-message">
+                    <p>📝</p>
+                    <p>{{ langService.t('diary.noPage') }}</p>
+                  </div>
+                </div>
+              </ng-template>
 
       <!-- Divisore centrale -->
       <div class="book-spine"></div>
@@ -74,14 +74,14 @@
                 </div>
                 <div class="page-share">
                   <button (click)="condividiEntry(visibleEntries()[1])" class="share-btn">
-                    🔗 Condividi
+                    {{ langService.t('diary.share') }}
                   </button>
                 </div>
               </div>
               <ng-template #emptyRight>
                 <div class="empty-message">
                   <p>📝</p>
-                  <p>Nessuna pagina qui</p>
+                  <p>{{ langService.t('diary.noPage') }}</p>
                 </div>
               </ng-template>
             </div>
@@ -90,7 +90,7 @@
       <div class="page right-page writing-page" *ngIf="isWriting()">
         <div class="writing-form">
           <div class="form-header">
-            <h4>✍️ Scrivi il tuo pensiero</h4>
+            <h4>{{ langService.t('diary.writeThought') }}</h4>
             <span class="writing-date">{{ formatDate(newEntry().data!) }}</span>
           </div>
 
@@ -98,7 +98,7 @@
             <textarea
               [ngModel]="newEntry().contenuto"
               (ngModelChange)="updateContenuto($event)"
-              placeholder="Come ti senti oggi? Cosa hai fatto? Cosa hai imparato?..."
+              [placeholder]="langService.t('diary.placeholder')"
               rows="12"
               class="writing-textarea"
             ></textarea>
@@ -117,7 +117,7 @@
           </div>
 
           <div class="form-group">
-            <label>Come ti senti?</label>
+            <label>{{ langService.t('diary.howDoYouFeel') }}</label>
             <div class="mood-selector">
               <button
                 *ngFor="let mood of moods"
@@ -131,9 +131,9 @@
           </div>
 
           <div class="form-actions">
-            <button (click)="cancelWriting()" class="btn-cancel">❌ Annulla</button>
+            <button (click)="cancelWriting()" class="btn-cancel">{{ langService.t('diary.cancel') }}</button>
             <button (click)="saveEntry()" class="btn-save" [disabled]="!newEntry().contenuto">
-              💾 Salva
+              {{ langService.t('diary.save') }}
             </button>
           </div>
         </div>
@@ -148,7 +148,7 @@
       [disabled]="!hasPreviousPage()"
       class="nav-book-btn"
     >
-      ◀ Indietro
+      {{ langService.t('diary.previous') }}
     </button>
     <span class="page-number">Pagina {{ currentPage() + 1 }}</span>
     <button 
@@ -156,7 +156,7 @@
       [disabled]="!hasNextPage()"
       class="nav-book-btn"
     >
-      Avanti ▶
+      {{ langService.t('diary.next') }}
     </button>
   </div>
 </div>

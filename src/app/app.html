@@ -22,56 +22,56 @@
       [class.active]="activeView() === 'chat'"
       class="nav-btn"
     >
-      💬 Chat
+      {{ langService.t('menu.chat') }}
     </button>
     <button
       (click)="setView('calendar')"
       [class.active]="activeView() === 'calendar'"
       class="nav-btn"
     >
-      📅 Calendario
+      {{ langService.t('menu.calendar') }}
     </button>
     <button
       (click)="setView('diary')"
       [class.active]="activeView() === 'diary'"
       class="nav-btn"
     >
-      📖 Diario
+      {{ langService.t('menu.diary') }}
     </button>
     <button
       (click)="setView('community')"
       [class.active]="activeView() === 'community'"
       class="nav-btn"
     >
-      👥 Community
+      {{ langService.t('menu.community') }}
     </button>
     <button
       (click)="setView('obiettivi')"
       [class.active]="activeView() === 'obiettivi'"
       class="nav-btn"
     >
-      🎯 Obiettivi
+      {{ langService.t('menu.obiettivi') }}
     </button>
     <button
       (click)="setView('habits')"
       [class.active]="activeView() === 'habits'"
       class="nav-btn"
     >
-      ✨ Abitudini
+      {{ langService.t('menu.habits') }}
     </button>
     <button
       (click)="setView('pomodoro')"
       [class.active]="activeView() === 'pomodoro'"
       class="nav-btn"
     >
-      🍅 Pomodoro
+      {{ langService.t('menu.pomodoro') }}
     </button>
     <button
       (click)="setView('stats')"
       [class.active]="activeView() === 'stats'"
       class="nav-btn"
     >
-      📊 Statistiche
+      {{ langService.t('menu.stats') }}
     </button>
   </nav>
 

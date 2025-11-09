@@ -6,6 +6,7 @@ import { ApiService } from '../../services/api';
 import { SpeechService } from '../../services/speech';
 import { PdfExportService } from '../../services/pdf-export';
 import { ToastService } from '../../services/toast';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-diary-book',
@@ -39,6 +40,7 @@ export class DiaryBook {
   constructor(
     public apiService: ApiService,
     public speechService: SpeechService,
+    public langService: LanguageService,
     private pdfExportService: PdfExportService,
     private toastService: ToastService
   ) {}
