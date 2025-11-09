@@ -9,18 +9,19 @@ import { DiaryBook } from './components/diary-book/diary-book';
 import { StatsDashboard } from './components/stats-dashboard/stats-dashboard';
 import { CommunityFeed } from './components/community-feed/community-feed';
 import { PomodoroTimer } from './components/pomodoro-timer/pomodoro-timer';
+import { HabitsTracker } from './components/habits-tracker/habits-tracker';
 import { GlobalSearch } from './components/global-search/global-search';
 import { Toast } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, GlobalSearch, Toast],
+  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, HabitsTracker, GlobalSearch, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   // Vista attiva
-  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro'>('chat');
+  activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits'>('chat');
   
   constructor(
     public themeService: ThemeService,
@@ -28,7 +29,7 @@ export class App {
   ) {}
   
   // Cambia vista
-  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro') {
+  setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community' | 'pomodoro' | 'habits') {
     this.activeView.set(view);
   }
 }

@@ -1,0 +1,65 @@
+<div class="habits-container">
+  <div class="habits-header">
+    <h3>✨ Tracker Abitudini</h3>
+    <p>Costruisci abitudini positive giorno dopo giorno</p>
+  </div>
+
+  <div class="habits-grid">
+    <div 
+      *ngFor="let habit of habits()"
+      class="habit-card"
+      [style.border-left-color]="getCategoryColor(habit.categoria)"
+    >
+      <!-- Header abitudine -->
+      <div class="habit-header">
+        <div class="habit-title-area">
+          <span class="habit-emoji">{{ habit.emoji }}</span>
+          <div>
+            <h4>{{ habit.nome }}</h4>
+            <p *ngIf="habit.descrizione">{{ habit.descrizione }}</p>
+          </div>
+        </div>
+        
+        <button
+          (click)="toggleToday(habit)"
+          class="today-toggle"
+          [class.completed]="isTodayCompleted(habit)"
+        >
+          {{ isTodayCompleted(habit) ? '✓' : '○' }}
+        </button>
+      </div>
+
+      <!-- Streak & Stats -->
+      <div class="habit-stats">
+        <div class="stat-item">
+          <span class="stat-icon">🔥</span>
+          <span class="stat-value">{{ habit.streak }}</span>
+          <span class="stat-label">giorni</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">📊</span>
+          <span class="stat-value">{{ habit.totalCompletamenti }}</span>
+          <span class="stat-label">totale</span>
+        </div>
+      </div>
+
+      <!-- Ultimi 7 giorni -->
+      <div class="habit-week">
+        <div 
+          *ngFor="let log of habit.completamenti.slice(-7)"
+          class="day-dot"
+          [class.completed]="log.completato"
+          [title]="(log.data | date:'dd/MM') + ' - ' + (log.completato ? 'Completato' : 'Non fatto')"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info motivazionale -->
+  <div class="motivation-box">
+    <h4>💡 Lo sapevi?</h4>
+    <p>Ci vogliono in media <strong>66 giorni</strong> per formare una nuova abitudine.</p>
+    <p>Continua così! Ogni giorno conta! 🚀</p>
+  </div>
+</div>

@@ -46,6 +46,13 @@
       👥 Community
     </button>
     <button
+      (click)="setView('habits')"
+      [class.active]="activeView() === 'habits'"
+      class="nav-btn"
+    >
+      ✨ Abitudini
+    </button>
+    <button
       (click)="setView('pomodoro')"
       [class.active]="activeView() === 'pomodoro'"
       class="nav-btn"
@@ -82,6 +89,11 @@
       <!-- Community View -->
       <div *ngIf="activeView() === 'community'" class="view-container">
         <app-community-feed></app-community-feed>
+      </div>
+
+      <!-- Habits View -->
+      <div *ngIf="activeView() === 'habits'" class="view-container">
+        <app-habits-tracker></app-habits-tracker>
       </div>
 
       <!-- Pomodoro View -->
