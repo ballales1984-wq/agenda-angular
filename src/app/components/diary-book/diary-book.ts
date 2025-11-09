@@ -21,13 +21,11 @@ export class DiaryBook {
   // Modalità scrittura
   isWriting = signal(false);
   
-  // Nuovo entry
-  newEntry = signal<Partial<DiarioEntry>>({
-    data: new Date(),
-    contenuto: '',
-    umore: 'neutro',
-    tags: []
-  });
+  // Form data - USO VARIABILI SEMPLICI invece di signal!
+  formContenuto = '';
+  formUmore: 'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato' = 'neutro';
+  formData = new Date();
+  formTags: string[] = [];
   
   // Array di moods disponibili
   moods: Array<'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato'> = 
@@ -96,15 +94,16 @@ export class DiaryBook {
   // Apri modalità scrittura
   startWriting() {
     console.log('✍️ Apertura form scrittura diario...');
+    
+    // Reset form con variabili semplici
+    this.formContenuto = '';
+    this.formUmore = 'neutro';
+    this.formData = new Date();
+    this.formTags = [];
+    
     this.isWriting.set(true);
     console.log('✍️ isWriting settato a:', this.isWriting());
-    this.newEntry.set({
-      data: new Date(),
-      contenuto: '',
-      umore: 'neutro',
-      tags: []
-    });
-    console.log('✍️ newEntry inizializzato:', this.newEntry());
+    console.log('✍️ Form resettato!');
     
     // Auto-focus sul textarea dopo un breve delay
     setTimeout(() => {
@@ -116,47 +115,26 @@ export class DiaryBook {
     }, 100);
   }
   
-  // Aggiorna contenuto
-  updateContenuto(value: string) {
-    console.log('⌨️ UPDATE CONTENUTO chiamato!');
-    console.log('⌨️ Valore ricevuto:', value);
-    console.log('⌨️ Tipo valore:', typeof value);
-    console.log('⌨️ Lunghezza:', value?.length);
-    
-    this.newEntry.update(entry => {
-      console.log('⌨️ Entry PRIMA update:', entry);
-      const updated = { ...entry, contenuto: value };
-      console.log('⌨️ Entry DOPO update:', updated);
-      return updated;
-    });
-    
-    console.log('⌨️ newEntry() FINALE:', this.newEntry());
-  }
-  
   // Salva entry
   saveEntry() {
     console.log('💾 CLICK SU SALVA! Inizio salvataggio...');
-    const entry = this.newEntry();
-    console.log('📝 Entry corrente COMPLETA:', JSON.stringify(entry, null, 2));
-    console.log('📝 Contenuto entry:', entry.contenuto);
-    console.log('📝 Tipo contenuto:', typeof entry.contenuto);
-    console.log('📝 Lunghezza contenuto:', entry.contenuto?.length);
+    console.log('📝 formContenuto:', this.formContenuto);
+    console.log('📝 formUmore:', this.formUmore);
+    console.log('📝 Lunghezza:', this.formContenuto?.length);
     
-    const contenuto = entry.contenuto || '';
-    console.log('📝 Contenuto dopo fallback:', contenuto);
-    console.log('📝 Trimmed:', contenuto.trim());
+    const contenuto = this.formContenuto.trim();
     
-    if (contenuto && contenuto.trim()) {
+    if (contenuto) {
       // SALVA DAVVERO NEL DIARIO!
       const nuovaEntry: DiarioEntry = {
         id: Date.now(),
-        data: entry.data || new Date(),
+        data: this.formData,
         contenuto: contenuto,
-        umore: entry.umore || 'neutro',
-        tags: entry.tags || []
+        umore: this.formUmore,
+        tags: this.formTags
       };
       
-      console.log('💾 CREAZIONE nuova entry:', JSON.stringify(nuovaEntry, null, 2));
+      console.log('💾 CREAZIONE nuova entry:', nuovaEntry);
       
       this.apiService.diario.update(diario => {
         console.log('📚 Diario PRIMA:', diario.length);
@@ -166,22 +144,13 @@ export class DiaryBook {
       });
       
       console.log('✅ Diario aggiornato! Totale pagine:', this.apiService.diario().length);
+      this.toastService.success(`✅ Pagina salvata! Totale: ${this.apiService.diario().length} pagine`);
       
-      this.toastService.success(`✅ Pagina diario salvata! Totale: ${this.apiService.diario().length} pagine`);
-      
+      // Chiudi form
       this.isWriting.set(false);
-      this.newEntry.set({
-        data: new Date(),
-        contenuto: '',
-        umore: 'neutro',
-        tags: []
-      });
-      
       console.log('✅ SALVATAGGIO COMPLETATO!');
     } else {
       console.warn('⚠️ CONTENUTO VUOTO!');
-      console.warn('⚠️ entry.contenuto:', entry.contenuto);
-      console.warn('⚠️ contenuto var:', contenuto);
       this.toastService.warning('Scrivi qualcosa prima di salvare!');
     }
   }
@@ -193,7 +162,8 @@ export class DiaryBook {
   
   // Imposta mood
   setMood(mood: 'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato') {
-    this.newEntry.update(entry => ({ ...entry, umore: mood }));
+    console.log('😊 Mood cambiato:', mood);
+    this.formUmore = mood;
   }
   
   // Ottieni emoji per umore
@@ -250,12 +220,8 @@ export class DiaryBook {
       
       if (text && text.trim()) {
         // Aggiungi al contenuto esistente
-        this.newEntry.update(entry => ({
-          ...entry,
-          contenuto: entry.contenuto ? entry.contenuto + ' ' + text : text
-        }));
-        
-        console.log('✅ Testo aggiunto al diario');
+        this.formContenuto = this.formContenuto ? this.formContenuto + ' ' + text : text;
+        console.log('✅ Testo aggiunto! Contenuto attuale:', this.formContenuto);
         this.toastService.success('✅ Testo aggiunto!');
       } else {
         console.warn('⚠️ Nessun testo riconosciuto');

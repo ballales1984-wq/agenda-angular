@@ -91,13 +91,12 @@
         <div class="writing-form">
           <div class="form-header">
             <h4>{{ langService.t('diary.writeThought') }}</h4>
-            <span class="writing-date">{{ formatDate(newEntry().data!) }}</span>
+            <span class="writing-date">{{ formatDate(formData) }}</span>
           </div>
 
           <div class="textarea-container">
             <textarea
-              [ngModel]="newEntry().contenuto"
-              (ngModelChange)="updateContenuto($event)"
+              [(ngModel)]="formContenuto"
               [placeholder]="langService.t('diary.placeholder')"
               rows="12"
               class="writing-textarea"
@@ -122,7 +121,7 @@
               <button
                 *ngFor="let mood of moods"
                 (click)="setMood(mood)"
-                [class.active]="newEntry().umore === mood"
+                [class.active]="formUmore === mood"
                 class="mood-btn"
               >
                 {{ getMoodEmoji(mood) }}
