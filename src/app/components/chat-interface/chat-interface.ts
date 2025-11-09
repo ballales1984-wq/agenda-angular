@@ -147,23 +147,46 @@ export class ChatInterface {
   // Avvia ascolto vocale
   async startVoiceInput() {
     if (!this.speechService.isRecognitionSupported()) {
-      alert('Il riconoscimento vocale non è supportato dal tuo browser. Prova Chrome o Edge.');
+      this.messages.update(msgs => [...msgs, {
+        text: '❌ Il riconoscimento vocale non è supportato dal tuo browser. Usa Chrome, Edge o Safari.',
+        sender: 'assistant',
+        timestamp: new Date(),
+        type: 'error'
+      }]);
       return;
     }
+    
+    // Messaggio di feedback
+    this.messages.update(msgs => [...msgs, {
+      text: '🎤 In ascolto... Parla ora!',
+      sender: 'assistant',
+      timestamp: new Date(),
+      type: 'info'
+    }]);
     
     try {
       const text = await this.speechService.startListening('it');
       
-      // Aggiungi il testo riconosciuto all'input
-      this.userInput.update(current => {
-        const newText = current ? current + ' ' + text : text;
-        return newText;
-      });
-      
-      // Opzionalmente invia subito
-      // this.sendMessage();
+      if (text && text.trim()) {
+        // Aggiungi il testo riconosciuto all'input
+        this.userInput.set(text);
+        
+        // Feedback positivo
+        this.messages.update(msgs => [...msgs, {
+          text: `✅ Ho capito: "${text}"`,
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'success'
+        }]);
+      }
     } catch (error) {
       console.error('Errore riconoscimento vocale:', error);
+      this.messages.update(msgs => [...msgs, {
+        text: `❌ Errore nel riconoscimento vocale. Riprova! Errore: ${error}`,
+        sender: 'assistant',
+        timestamp: new Date(),
+        type: 'error'
+      }]);
     }
   }
 }
