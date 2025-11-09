@@ -1,10 +1,10 @@
 <div class="calendar-container">
   <div class="calendar-header">
-    <h3>📅 Calendario Settimanale</h3>
+    <h3>{{ langService.t('calendar.title') }}</h3>
     <div class="calendar-controls">
-      <button (click)="previousWeek()" class="nav-btn">◀ Precedente</button>
-      <button (click)="goToToday()" class="today-btn">Oggi</button>
-      <button (click)="nextWeek()" class="nav-btn">Successiva ▶</button>
+      <button (click)="previousWeek()" class="nav-btn">{{ langService.t('calendar.previous') }}</button>
+      <button (click)="goToToday()" class="today-btn">{{ langService.t('calendar.today') }}</button>
+      <button (click)="nextWeek()" class="nav-btn">{{ langService.t('calendar.next') }}</button>
     </div>
   </div>
 

@@ -7,7 +7,7 @@
         <input
           type="text"
           [(ngModel)]="searchQuery"
-          placeholder="Cerca in tutto (impegni, diario, obiettivi)..."
+          [placeholder]="langService.t('search.placeholder')"
           class="search-input"
           autofocus
         />
@@ -21,7 +21,7 @@
     <div class="search-results">
       <div *ngIf="searchQuery() && searchResults().length === 0" class="no-results">
         <p class="no-results-icon">🔍</p>
-        <p>Nessun risultato per "{{ searchQuery() }}"</p>
+        <p>{{ langService.t('search.noResults') }} "{{ searchQuery() }}"</p>
       </div>
 
       <div *ngIf="!searchQuery()" class="search-empty">

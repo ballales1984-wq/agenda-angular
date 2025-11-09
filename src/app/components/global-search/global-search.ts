@@ -2,6 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api';
+import { LanguageService } from '../../services/language';
 
 interface SearchResult {
   type: 'impegno' | 'diario' | 'obiettivo' | 'post';
@@ -22,7 +23,10 @@ export class GlobalSearch {
   searchQuery = signal('');
   isOpen = signal(false);
   
-  constructor(public apiService: ApiService) {}
+  constructor(
+    public apiService: ApiService,
+    public langService: LanguageService
+  ) {}
   
   // Risultati della ricerca
   searchResults = computed(() => {

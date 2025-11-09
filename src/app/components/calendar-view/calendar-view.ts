@@ -2,6 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Impegno } from '../../models/impegno';
 import { ApiService } from '../../services/api';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-calendar-view',
@@ -29,7 +30,10 @@ export class CalendarView {
   // Giorni della settimana
   dayNames = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
   
-  constructor(public apiService: ApiService) {}
+  constructor(
+    public apiService: ApiService,
+    public langService: LanguageService
+  ) {}
   
   // Ottieni l'inizio della settimana (Lunedì)
   private getWeekStart(date: Date): Date {
