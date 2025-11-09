@@ -121,9 +121,22 @@ export class ChatInterface {
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('diario') || lower.includes('oggi') || lower.includes('sento') || lower.includes('giornata') || lower.includes('pensiero')) {
+      } else if (lower.includes('diario') || lower.includes('scrivi nel') || lower.includes('annota')) {
+        // SALVA DAVVERO NEL DIARIO!
+        const entryCreata = this.addDiarioFromMessage(message);
+        
         response = {
-          text: '📖 Ho salvato la tua riflessione nel diario! Vai su 📖 Diario per rileggere tutti i tuoi pensieri. Puoi anche sfogliare con swipe o ascoltarli con 🔊 Leggi!',
+          text: `📖 Ho salvato "${entryCreata.preview}" nel diario! Vai su 📖 Diario per leggerlo o ascoltarlo con 🔊 Leggi!`,
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'success'
+        };
+      } else if (lower.includes('oggi') || lower.includes('sento') || lower.includes('giornata') || lower.includes('pensiero')) {
+        // SALVA DAVVERO NEL DIARIO!
+        const entryCreata = this.addDiarioFromMessage(message);
+        
+        response = {
+          text: `📖 Ho salvato la tua riflessione nel diario! Vai su 📖 Diario per rileggere. Puoi anche ascoltarla con 🔊 Leggi!`,
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
@@ -294,6 +307,55 @@ export class ChatInterface {
     
     return {
       titolo: titolo
+    };
+  }
+  
+  // AGGIUNGE DAVVERO UNA ENTRY NEL DIARIO
+  private addDiarioFromMessage(message: string): any {
+    const lower = message.toLowerCase();
+    
+    // Estrai contenuto (rimuovi "scrivi nel diario", "diario", etc.)
+    let contenuto = message;
+    contenuto = contenuto.replace(/scrivi nel diario|scrivi|diario|annota|nel diario/gi, '').trim();
+    
+    // Se rimane poco testo, usa il messaggio originale
+    if (contenuto.length < 5) {
+      contenuto = message;
+    }
+    
+    // Determina umore (semplice detection)
+    let umore: 'felice' | 'neutro' | 'triste' | 'motivato' | 'stressato' = 'neutro';
+    
+    if (lower.includes('felice') || lower.includes('bene') || lower.includes('contento') || lower.includes('allegr')) {
+      umore = 'felice';
+    } else if (lower.includes('motivato') || lower.includes('determinat') || lower.includes('caric')) {
+      umore = 'motivato';
+    } else if (lower.includes('triste') || lower.includes('male') || lower.includes('giù')) {
+      umore = 'triste';
+    } else if (lower.includes('stress') || lower.includes('ansia') || lower.includes('preoccup')) {
+      umore = 'stressato';
+    }
+    
+    // Estrai possibili tags
+    const tags: string[] = [];
+    if (lower.includes('lavoro')) tags.push('lavoro');
+    if (lower.includes('studio') || lower.includes('imparar')) tags.push('studio');
+    if (lower.includes('amici') || lower.includes('famiglia')) tags.push('personale');
+    if (lower.includes('sport') || lower.includes('palestra')) tags.push('sport');
+    
+    // CREA L'ENTRY
+    const nuovaEntry = {
+      id: Date.now(),
+      data: new Date(),
+      contenuto: contenuto,
+      umore: umore,
+      tags: tags
+    };
+    
+    this.apiService.diario.update(diario => [...diario, nuovaEntry]);
+    
+    return {
+      preview: contenuto.substring(0, 50) + (contenuto.length > 50 ? '...' : '')
     };
   }
   
