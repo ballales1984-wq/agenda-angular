@@ -46,6 +46,13 @@
       👥 Community
     </button>
     <button
+      (click)="setView('obiettivi')"
+      [class.active]="activeView() === 'obiettivi'"
+      class="nav-btn"
+    >
+      🎯 Obiettivi
+    </button>
+    <button
       (click)="setView('habits')"
       [class.active]="activeView() === 'habits'"
       class="nav-btn"
@@ -89,6 +96,11 @@
       <!-- Community View -->
       <div *ngIf="activeView() === 'community'" class="view-container">
         <app-community-feed></app-community-feed>
+      </div>
+
+      <!-- Obiettivi View -->
+      <div *ngIf="activeView() === 'obiettivi'" class="view-container">
+        <app-obiettivi-manager></app-obiettivi-manager>
       </div>
 
       <!-- Habits View -->

@@ -1,0 +1,118 @@
+<div class="obiettivi-container">
+  <div class="obiettivi-header">
+    <h3>🎯 I Miei Obiettivi</h3>
+    <p>Traccia i tuoi obiettivi e monitora il progresso</p>
+    <button (click)="apriForm()" class="btn-nuovo">
+      ➕ Nuovo Obiettivo
+    </button>
+  </div>
+
+  <!-- Form nuovo obiettivo -->
+  <div *ngIf="isCreating()" class="form-obiettivo">
+    <div class="form-header">
+      <h4>Crea Nuovo Obiettivo</h4>
+      <button (click)="chiudiForm()" class="btn-close">✕</button>
+    </div>
+
+    <input
+      [(ngModel)]="nuovoObiettivo().titolo"
+      placeholder="Titolo (es: Imparare Angular)"
+      class="form-input"
+    />
+
+    <textarea
+      [(ngModel)]="nuovoObiettivo().descrizione"
+      placeholder="Descrizione opzionale..."
+      rows="3"
+      class="form-textarea"
+    ></textarea>
+
+    <div class="form-row">
+      <select [(ngModel)]="nuovoObiettivo().categoria" class="form-select">
+        <option value="studio">📚 Studio</option>
+        <option value="lavoro">💼 Lavoro</option>
+        <option value="salute">💪 Salute</option>
+        <option value="personale">🎯 Personale</option>
+      </select>
+
+      <select [(ngModel)]="nuovoObiettivo().frequenza" class="form-select">
+        <option value="giornaliero">📅 Giornaliero</option>
+        <option value="settimanale">📆 Settimanale</option>
+        <option value="mensile">📊 Mensile</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Ore necessarie: {{ nuovoObiettivo().ore_necessarie }}h</label>
+      <input
+        type="range"
+        [(ngModel)]="nuovoObiettivo().ore_necessarie"
+        min="1"
+        max="100"
+        class="form-range"
+      />
+    </div>
+
+    <button (click)="creaObiettivo()" class="btn-crea">
+      ✅ Crea Obiettivo
+    </button>
+  </div>
+
+  <!-- Lista obiettivi -->
+  <div class="obiettivi-grid">
+    <div *ngIf="apiService.obiettivi().length === 0" class="empty-state">
+      <p class="empty-icon">🎯</p>
+      <p>Nessun obiettivo ancora.</p>
+      <p class="empty-hint">Inizia creandone uno o dettalo alla chat!</p>
+    </div>
+
+    <div
+      *ngFor="let obiettivo of apiService.obiettivi()"
+      class="obiettivo-card"
+      [style.border-left-color]="getColoreCategoria(obiettivo.categoria)"
+    >
+      <!-- Header -->
+      <div class="obiettivo-header">
+        <span class="obiettivo-icon">{{ getIconaCategoria(obiettivo.categoria) }}</span>
+        <div class="obiettivo-info">
+          <h4>{{ obiettivo.titolo }}</h4>
+          <p *ngIf="obiettivo.descrizione">{{ obiettivo.descrizione }}</p>
+        </div>
+        <button (click)="eliminaObiettivo(obiettivo.id!)" class="btn-delete">🗑️</button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progresso-container">
+        <div class="progresso-info">
+          <span>{{ obiettivo.ore_completate }}h / {{ obiettivo.ore_necessarie }}h</span>
+          <span class="progresso-percent">{{ obiettivo.progresso }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="obiettivo.progresso"
+            [style.background-color]="getColoreCategoria(obiettivo.categoria)"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="obiettivo-actions">
+        <button (click)="aggiornaProgresso(obiettivo.id!, 1)" class="btn-add-time">
+          +1h
+        </button>
+        <button (click)="aggiornaProgresso(obiettivo.id!, 2)" class="btn-add-time">
+          +2h
+        </button>
+        <button (click)="aggiornaProgresso(obiettivo.id!, 5)" class="btn-add-time">
+          +5h
+        </button>
+      </div>
+
+      <!-- Badge completato -->
+      <div *ngIf="obiettivo.completato" class="badge-completato">
+        ✅ Completato!
+      </div>
+    </div>
+  </div>
+</div>

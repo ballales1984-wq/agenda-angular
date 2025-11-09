@@ -101,9 +101,12 @@ export class ChatInterface {
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('studiare') || lower.includes('imparare') || lower.includes('corso')) {
+      } else if (lower.includes('studiare') || lower.includes('imparare') || lower.includes('corso') || lower.includes('voglio')) {
+        // CREA DAVVERO L'OBIETTIVO!
+        const obiettivoCreato = this.addObiettivoFromMessage(message);
+        
         response = {
-          text: '🎯 Fantastico! Ho creato un obiettivo di studio per te. Controlla la sezione 📊 Statistiche per vedere il progresso!',
+          text: `🎯 Fantastico! Ho creato l'obiettivo "${obiettivoCreato.titolo}" per te! Vai su 🎯 Obiettivi per vedere il progresso e aggiungere ore!`,
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
@@ -245,6 +248,52 @@ export class ChatInterface {
       titolo: titolo,
       quando: lower.includes('domani') ? 'domani' : lower.includes('dopodomani') ? 'dopodomani' : 'oggi',
       ora: oraInizio
+    };
+  }
+  
+  // AGGIUNGE DAVVERO UN OBIETTIVO
+  private addObiettivoFromMessage(message: string): any {
+    const lower = message.toLowerCase();
+    
+    // Estrai titolo
+    let titolo = message;
+    titolo = titolo.replace(/voglio|studiare|imparare|corso|vorrei/gi, '').trim();
+    
+    // Trova ore se menzionate (es: "3 ore a settimana")
+    const oreMatch = message.match(/(\d+)\s*ore?/i);
+    const ore = oreMatch ? parseInt(oreMatch[1]) : 10;
+    
+    // Determina frequenza
+    let frequenza: 'giornaliero' | 'settimanale' | 'mensile' = 'settimanale';
+    if (lower.includes('giorno') || lower.includes('giornaliero')) {
+      frequenza = 'giornaliero';
+    } else if (lower.includes('mese') || lower.includes('mensile')) {
+      frequenza = 'mensile';
+    }
+    
+    // Pulisci titolo
+    if (!titolo || titolo.length < 2) {
+      titolo = message;
+    }
+    
+    // CREA L'OBIETTIVO
+    const nuovoObiettivo = {
+      id: Date.now(),
+      titolo: titolo,
+      descrizione: message,
+      categoria: 'studio' as 'studio' | 'lavoro' | 'salute' | 'personale',
+      frequenza: frequenza,
+      ore_necessarie: ore,
+      ore_completate: 0,
+      progresso: 0,
+      data_inizio: new Date(),
+      completato: false
+    };
+    
+    this.apiService.obiettivi.update(obiettivi => [...obiettivi, nuovoObiettivo]);
+    
+    return {
+      titolo: titolo
     };
   }
   
