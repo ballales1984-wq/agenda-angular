@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api';
 import { ToastService } from '../../services/toast';
+import { LanguageService } from '../../services/language';
 
 @Component({
   selector: 'app-obiettivi-manager',
@@ -23,6 +24,7 @@ export class ObiettiviManager {
   
   constructor(
     public apiService: ApiService,
+    public langService: LanguageService,
     private toastService: ToastService
   ) {}
   
