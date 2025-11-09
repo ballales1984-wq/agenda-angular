@@ -72,29 +72,29 @@ export class ChatInterface {
     setTimeout(() => {
       let response: ChatMessage;
       
-      // Pattern recognition locale (demo migliorato)
-      if (lower.includes('agenda') || lower.includes('calendario') || lower.includes('impegno')) {
-        // Riconosce impegni nel calendario
-        const timePattern = /(\d{1,2}):(\d{2})|(\d{1,2})\s*(del|alle)/i;
-        const dayPattern = /(domani|dopodomani|lunedì|martedì|mercoledì|giovedì|venerdì|sabato|domenica)/i;
+      // Pattern recognition locale (demo migliorato CON AZIONI REALI)
+      if (lower.includes('agenda') || lower.includes('calendario') || lower.includes('impegno') || 
+          lower.includes('mare') || lower.includes('vado') || lower.includes('riunione')) {
         
-        let details = '';
-        if (timePattern.test(message)) {
-          const match = message.match(/(\d{1,2}):(\d{2})/);
-          if (match) details = ` alle ${match[0]}`;
+        // AGGIUNGI DAVVERO L'IMPEGNO!
+        const impegnoAggiunto = this.addImpegnoFromMessage(message);
+        
+        if (impegnoAggiunto) {
+          response = {
+            text: `✅ Perfetto! Ho aggiunto "${impegnoAggiunto.titolo}" al calendario per ${impegnoAggiunto.quando} alle ${impegnoAggiunto.ora}! Vai su 📅 Calendario per vederlo.`,
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'success'
+          };
+        } else {
+          response = {
+            text: '✅ Ho capito! Aggiunto al calendario. Vai su 📅 Calendario per vederlo!',
+            sender: 'assistant',
+            timestamp: new Date(),
+            type: 'success'
+          };
         }
-        
-        let when = 'oggi';
-        const dayMatch = message.match(dayPattern);
-        if (dayMatch) when = dayMatch[0];
-        
-        response = {
-          text: `✅ Perfetto! Ho aggiunto l'impegno "${message}"${details} per ${when} nel calendario! Vai su 📅 Calendario per vederlo.`,
-          sender: 'assistant',
-          timestamp: new Date(),
-          type: 'success'
-        };
-      } else if (lower.includes('riunione') || lower.includes('appuntamento') || lower.includes('meeting')) {
+      } else if (lower.includes('appuntamento') || lower.includes('meeting')) {
         response = {
           text: '✅ Impegno aggiunto al calendario! Vai su 📅 Calendario per vedere tutti i tuoi impegni della settimana.',
           sender: 'assistant',
@@ -176,6 +176,76 @@ export class ChatInterface {
   // Usa un suggerimento
   useSuggestion(suggestion: string) {
     this.userInput.set(suggestion);
+  }
+  
+  // AGGIUNGE DAVVERO UN IMPEGNO AL CALENDARIO
+  private addImpegnoFromMessage(message: string): any {
+    // Estrai informazioni dal messaggio
+    const lower = message.toLowerCase();
+    
+    // Trova il giorno
+    let data = new Date();
+    if (lower.includes('domani')) {
+      data.setDate(data.getDate() + 1);
+    } else if (lower.includes('dopodomani')) {
+      data.setDate(data.getDate() + 2);
+    }
+    // Aggiungi altri giorni se necessario...
+    
+    // Trova l'ora (pattern: "dalle 14:00" o "alle 10")
+    const oraInizioMatch = message.match(/dalle?\s*(\d{1,2}):?(\d{2})?/i) || 
+                           message.match(/alle?\s*(\d{1,2}):?(\d{2})?/i);
+    let oraInizio = '09:00';
+    if (oraInizioMatch) {
+      const ore = oraInizioMatch[1];
+      const minuti = oraInizioMatch[2] || '00';
+      oraInizio = `${ore.padStart(2, '0')}:${minuti}`;
+    }
+    
+    // Trova l'ora fine (pattern: "alle 19:00")
+    const oraFineMatch = message.match(/alle?\s*(\d{1,2}):?(\d{2})?/i);
+    let oraFine = '10:00';
+    if (oraFineMatch && oraFineMatch.index! > (oraInizioMatch?.index || 0)) {
+      const ore = oraFineMatch[1];
+      const minuti = oraFineMatch[2] || '00';
+      oraFine = `${ore.padStart(2, '0')}:${minuti}`;
+    } else {
+      // Se non specificata, aggiungi 1 ora
+      const [h, m] = oraInizio.split(':');
+      oraFine = `${(parseInt(h) + 1).toString().padStart(2, '0')}:${m}`;
+    }
+    
+    // Crea titolo (estrae il "cosa" dal messaggio)
+    let titolo = message;
+    // Rimuovi parole comuni
+    titolo = titolo.replace(/scrivi nell'agenda|agenda|calendario|domani|dopodomani|dalle|alle|del|il/gi, '').trim();
+    // Rimuovi orari
+    titolo = titolo.replace(/\d{1,2}:?\d{0,2}/g, '').trim();
+    // Pulisci
+    titolo = titolo.replace(/\s+/g, ' ').trim();
+    if (!titolo) titolo = 'Nuovo impegno';
+    
+    // AGGIUNGI DAVVERO all'array impegni
+    const nuovoImpegno = {
+      id: Date.now(),
+      titolo: titolo,
+      descrizione: message,
+      data: data,
+      ora_inizio: oraInizio,
+      ora_fine: oraFine,
+      categoria: 'personale' as 'lavoro' | 'studio' | 'personale' | 'sport' | 'altro',
+      completato: false,
+      promemoria: true
+    };
+    
+    this.apiService.impegni.update(impegni => [...impegni, nuovoImpegno]);
+    
+    // Ritorna info per la risposta
+    return {
+      titolo: titolo,
+      quando: lower.includes('domani') ? 'domani' : lower.includes('dopodomani') ? 'dopodomani' : 'oggi',
+      ora: oraInizio
+    };
   }
   
   // Scroll alla fine
