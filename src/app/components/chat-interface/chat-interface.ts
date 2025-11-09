@@ -32,10 +32,10 @@ export class ChatInterface {
   
   // Esempi suggeriti
   suggestions = [
-    'Lunedì riunione dalle 10 alle 12',
-    'Voglio studiare Python 3 ore a settimana',
-    'Oggi ho parlato con un amico, mi sento bene',
-    'Speso 50€ per spesa'
+    'Voglio correre una maratona',
+    'Voglio imparare Python',
+    'Voglio meditare ogni giorno',
+    'Lunedì riunione dalle 10 alle 12'
   ];
   
   constructor(
@@ -75,6 +75,50 @@ export class ChatInterface {
     setTimeout(() => {
       let response: ChatMessage;
       
+      // 🧠 PRIORITÀ 1: Controlla se c'è conversazione AI attiva!
+      if (this.aiPlanner.conversazioneAttiva()) {
+        const domandeRimaste = this.aiPlanner.domandeRimaste();
+        
+        if (domandeRimaste.length > 0) {
+          const domandeCorrente = domandeRimaste[0];
+          const prossimaDomanda = this.aiPlanner.registraRisposta(domandeCorrente, message);
+          
+          if (prossimaDomanda) {
+            // C'è un'altra domanda
+            response = {
+              text: `✅ Perfetto!\n\n${prossimaDomanda.domanda}\n\n` +
+                    `Opzioni:\n` +
+                    prossimaDomanda.opzioni!.map((op, i) => `${i + 1}. ${op}`).join('\n'),
+              sender: 'assistant',
+              timestamp: new Date(),
+              type: 'info'
+            };
+          } else {
+            // Piano completato!
+            const piano = this.aiPlanner.pianoGenerato();
+            response = {
+              text: `🎉 PIANO CREATO!\n\n` +
+                    `📋 ${piano!.task.length} sessioni programmate\n` +
+                    `📅 ${piano!.durataSettimane} settimane di percorso\n` +
+                    `⏱️ ${piano!.oreDisponibili} ore/settimana\n\n` +
+                    `📊 Metriche tracking:\n` +
+                    piano!.metriche.map(m => `• ${m.nome}: ${m.obiettivo} ${m.unita}`).join('\n') +
+                    `\n\n✅ Ho aggiunto le prime 10 sessioni al calendario!\n` +
+                    `🎯 Vai su Calendario e Obiettivi per vedere tutto!`,
+              sender: 'assistant',
+              timestamp: new Date(),
+              type: 'success'
+            };
+          }
+          
+          this.messages.update(msgs => [...msgs, response]);
+          this.isLoading.set(false);
+          this.speechService.speak(response.text);
+          setTimeout(() => this.scrollToBottom(), 100);
+          return; // ESCE subito, non processa altri pattern!
+        }
+      }
+      
       // Pattern recognition locale (demo migliorato CON AZIONI REALI)
       if (lower.includes('agenda') || lower.includes('calendario') || lower.includes('impegno') || 
           lower.includes('mare') || lower.includes('vado') || lower.includes('riunione')) {
@@ -104,62 +148,19 @@ export class ChatInterface {
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('studiare') || lower.includes('imparare') || lower.includes('corso') || lower.includes('voglio')) {
+      } else if (lower.includes('studiare') || lower.includes('imparare') || lower.includes('corso') || lower.includes('voglio') || lower.includes('correre') || lower.includes('maratona')) {
         // 🧠 AVVIA AI PLANNER - Conversazione guidata!
-        if (!this.aiPlanner.conversazioneAttiva()) {
-          const primaDomanda = this.aiPlanner.avviaPianificazione(message);
-          
-          response = {
-            text: `🧠 Perfetto! Ti aiuto a creare un piano personalizzato per "${message}"!\n\n` +
-                  `${primaDomanda.domanda}\n\n` +
-                  `Opzioni:\n` + 
-                  primaDomanda.opzioni!.map((op, i) => `${i + 1}. ${op}`).join('\n'),
-            sender: 'assistant',
-            timestamp: new Date(),
-            type: 'info'
-          };
-        } else {
-          // Risposta a domanda AI Planner
-          const domandeRimaste = this.aiPlanner.domandeRimaste();
-          if (domandeRimaste.length > 0) {
-            const domandeCorrente = domandeRimaste[0];
-            const prossimaDomanda = this.aiPlanner.registraRisposta(domandeCorrente, message);
-            
-            if (prossimaDomanda) {
-              response = {
-                text: `✅ Perfetto!\n\n${prossimaDomanda.domanda}\n\n` +
-                      `Opzioni:\n` +
-                      prossimaDomanda.opzioni!.map((op, i) => `${i + 1}. ${op}`).join('\n'),
-                sender: 'assistant',
-                timestamp: new Date(),
-                type: 'info'
-              };
-            } else {
-              // Piano completato!
-              const piano = this.aiPlanner.pianoGenerato();
-              response = {
-                text: `🎉 PIANO CREATO!\n\n` +
-                      `📋 ${piano!.task.length} sessioni di studio programmate\n` +
-                      `📅 ${piano!.durataSettimane} settimane di percorso\n` +
-                      `⏱️ ${piano!.oreDisponibili} ore/settimana\n\n` +
-                      `✅ Ho aggiunto le prime 7 sessioni al calendario!\n` +
-                      `🎯 Vai su Calendario e Obiettivi per vedere tutto!`,
-                sender: 'assistant',
-                timestamp: new Date(),
-                type: 'success'
-              };
-            }
-          } else {
-            // Fallback normale
-            const obiettivoCreato = this.addObiettivoFromMessage(message);
-            response = {
-              text: `🎯 Obiettivo "${obiettivoCreato.titolo}" creato!`,
-              sender: 'assistant',
-              timestamp: new Date(),
-              type: 'success'
-            };
-          }
-        }
+        const primaDomanda = this.aiPlanner.avviaPianificazione(message);
+        
+        response = {
+          text: `🧠 Perfetto! Ti aiuto a creare un piano personalizzato!\n\n` +
+                `${primaDomanda.domanda}\n\n` +
+                `Opzioni:\n` + 
+                primaDomanda.opzioni!.map((op, i) => `${i + 1}. ${op}`).join('\n'),
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'info'
+        };
       } else if (lower.includes('speso') || lower.includes('spesa') || lower.includes('€') || lower.includes('euro') || lower.includes('pagato')) {
         const amountMatch = message.match(/(\d+)\s*€|€\s*(\d+)|(\d+)\s*euro/i);
         const amount = amountMatch ? parseInt(amountMatch[1] || amountMatch[2] || amountMatch[3]) : 0;
