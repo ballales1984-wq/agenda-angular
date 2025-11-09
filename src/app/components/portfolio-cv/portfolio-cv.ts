@@ -129,7 +129,7 @@ Sempre alla ricerca di nuove tecnologie e best practices.`;
     return this.skills().filter(s => s.categoria === this.filtroSkills());
   }
   
-  setFiltroSkills(filtro: typeof this.filtroSkills extends signal<infer T> ? T : never) {
+  setFiltroSkills(filtro: 'tutti' | 'frontend' | 'backend' | 'tools' | 'soft') {
     this.filtroSkills.set(filtro);
   }
   
