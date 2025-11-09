@@ -105,6 +105,15 @@ export class DiaryBook {
       tags: []
     });
     console.log('✍️ newEntry inizializzato:', this.newEntry());
+    
+    // Auto-focus sul textarea dopo un breve delay
+    setTimeout(() => {
+      const textarea = document.querySelector('.writing-textarea') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.focus();
+        console.log('✍️ Textarea focused!');
+      }
+    }, 100);
   }
   
   // Aggiorna contenuto

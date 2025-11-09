@@ -322,24 +322,25 @@
   min-height: 300px;
   padding: 1rem;
   padding-right: 4rem;
-  border: none;
-  background: transparent;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
   font-family: 'Georgia', serif;
   font-size: 1.05rem;
   line-height: 2;
   color: #2c3e50;
   resize: vertical;
-  background: 
-    repeating-linear-gradient(
-      transparent,
-      transparent 31px,
-      rgba(139, 69, 19, 0.15) 31px,
-      rgba(139, 69, 19, 0.15) 32px
-    );
+  z-index: 1;
+  position: relative;
+  pointer-events: auto;
+  cursor: text;
 }
 
 .writing-textarea:focus {
   outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .diary-mic-btn {
@@ -355,6 +356,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .diary-mic-btn:hover:not(:disabled) {
