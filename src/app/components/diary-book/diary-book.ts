@@ -106,12 +106,16 @@ export class DiaryBook {
   
   // Aggiorna contenuto
   updateContenuto(value: string) {
+    console.log('📝 Contenuto aggiornato:', value);
     this.newEntry.update(entry => ({ ...entry, contenuto: value }));
   }
   
   // Salva entry
   saveEntry() {
+    console.log('💾 Tentativo salvataggio diario...');
     const entry = this.newEntry();
+    console.log('📝 Entry corrente:', entry);
+    
     if (entry.contenuto && entry.contenuto.trim()) {
       // SALVA DAVVERO NEL DIARIO!
       const nuovaEntry = {
@@ -122,7 +126,10 @@ export class DiaryBook {
         tags: entry.tags || []
       };
       
+      console.log('💾 Salvataggio entry:', nuovaEntry);
       this.apiService.diario.update(diario => [...diario, nuovaEntry]);
+      console.log('✅ Diario aggiornato! Totale pagine:', this.apiService.diario().length);
+      
       this.toastService.success(`✅ Pagina diario salvata! Totale: ${this.apiService.diario().length} pagine`);
       
       this.isWriting.set(false);
@@ -133,6 +140,7 @@ export class DiaryBook {
         tags: []
       });
     } else {
+      console.warn('⚠️ Contenuto vuoto, impossibile salvare');
       this.toastService.warning('Scrivi qualcosa prima di salvare!');
     }
   }
@@ -192,8 +200,12 @@ export class DiaryBook {
   
   // DETTATURA NEL DIARIO
   async dettaNelDiario() {
+    console.log('🎤 Avvio dettatura diario...');
+    this.toastService.info('🎤 In ascolto...');
+    
     try {
       const text = await this.speechService.startListening('it');
+      console.log('🎤 Testo riconosciuto:', text);
       
       if (text && text.trim()) {
         // Aggiungi al contenuto esistente
@@ -202,9 +214,14 @@ export class DiaryBook {
           contenuto: entry.contenuto ? entry.contenuto + ' ' + text : text
         }));
         
+        console.log('✅ Testo aggiunto al diario');
         this.toastService.success('✅ Testo aggiunto!');
+      } else {
+        console.warn('⚠️ Nessun testo riconosciuto');
+        this.toastService.warning('Nessun testo riconosciuto. Riprova!');
       }
     } catch (error) {
+      console.error('❌ Errore dettatura diario:', error);
       this.toastService.error(`Errore: ${error}`);
     }
   }
