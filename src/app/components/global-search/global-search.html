@@ -1,0 +1,63 @@
+<!-- Overlay ricerca -->
+<div *ngIf="isOpen()" class="search-overlay" (click)="close()">
+  <div class="search-modal" (click)="$event.stopPropagation()">
+    <div class="search-header">
+      <div class="search-input-container">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Cerca in tutto (impegni, diario, obiettivi)..."
+          class="search-input"
+          autofocus
+        />
+        <button (click)="close()" class="close-btn">✕</button>
+      </div>
+      <div class="search-hint">
+        Premi <kbd>Esc</kbd> per chiudere
+      </div>
+    </div>
+
+    <div class="search-results">
+      <div *ngIf="searchQuery() && searchResults().length === 0" class="no-results">
+        <p class="no-results-icon">🔍</p>
+        <p>Nessun risultato per "{{ searchQuery() }}"</p>
+      </div>
+
+      <div *ngIf="!searchQuery()" class="search-empty">
+        <p class="empty-icon">💡</p>
+        <p>Inizia a digitare per cercare...</p>
+        <p class="empty-hint">Cerca in impegni, diario, obiettivi e community</p>
+      </div>
+
+      <div class="results-list">
+        <div 
+          *ngFor="let result of searchResults()"
+          class="result-item"
+          [class]="'result-' + result.type"
+        >
+          <div class="result-icon">{{ result.icon }}</div>
+          <div class="result-content">
+            <div class="result-header">
+              <span class="result-title">{{ result.title }}</span>
+              <span class="result-type-badge">{{ getTypeLabel(result.type) }}</span>
+            </div>
+            <p class="result-description">{{ result.content }}</p>
+            <span *ngIf="result.date" class="result-date">
+              📅 {{ result.date | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottone trigger (floating action button) -->
+<button
+  (click)="toggle()"
+  class="search-fab"
+  title="Cerca (Ctrl+K)"
+>
+  🔍
+</button>

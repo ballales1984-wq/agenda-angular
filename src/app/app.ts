@@ -9,11 +9,12 @@ import { DiaryBook } from './components/diary-book/diary-book';
 import { StatsDashboard } from './components/stats-dashboard/stats-dashboard';
 import { CommunityFeed } from './components/community-feed/community-feed';
 import { PomodoroTimer } from './components/pomodoro-timer/pomodoro-timer';
+import { GlobalSearch } from './components/global-search/global-search';
 import { Toast } from './components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, Toast],
+  imports: [CommonModule, RouterOutlet, ChatInterface, CalendarView, DiaryBook, StatsDashboard, CommunityFeed, PomodoroTimer, GlobalSearch, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
