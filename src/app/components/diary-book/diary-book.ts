@@ -102,6 +102,11 @@ export class DiaryBook {
     });
   }
   
+  // Aggiorna contenuto
+  updateContenuto(value: string) {
+    this.newEntry.update(entry => ({ ...entry, contenuto: value }));
+  }
+  
   // Salva entry
   saveEntry() {
     const entry = this.newEntry();

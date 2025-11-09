@@ -96,7 +96,8 @@
 
           <div class="textarea-container">
             <textarea
-              [(ngModel)]="newEntry().contenuto"
+              [ngModel]="newEntry().contenuto"
+              (ngModelChange)="updateContenuto($event)"
               placeholder="Come ti senti oggi? Cosa hai fatto? Cosa hai imparato?..."
               rows="12"
               class="writing-textarea"
