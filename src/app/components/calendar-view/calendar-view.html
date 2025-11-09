@@ -1,0 +1,76 @@
+<div class="calendar-container">
+  <div class="calendar-header">
+    <h3>📅 Calendario Settimanale</h3>
+    <div class="calendar-controls">
+      <button (click)="previousWeek()" class="nav-btn">◀ Precedente</button>
+      <button (click)="goToToday()" class="today-btn">Oggi</button>
+      <button (click)="nextWeek()" class="nav-btn">Successiva ▶</button>
+    </div>
+  </div>
+
+  <div class="calendar-grid">
+    <!-- Header con giorni -->
+    <div class="time-column header-cell"></div>
+    <div 
+      *ngFor="let day of weekDays(); let i = index"
+      class="day-header"
+      [class.today]="isToday(day)"
+    >
+      <div class="day-name">{{ dayNames[i] }}</div>
+      <div class="day-date">{{ formatDate(day) }}</div>
+    </div>
+
+    <!-- Griglia oraria -->
+    <ng-container *ngFor="let hour of hours">
+      <!-- Colonna orario -->
+      <div class="time-cell">
+        {{ hour }}:00
+      </div>
+
+      <!-- Celle per ogni giorno -->
+      <div 
+        *ngFor="let day of weekDays()"
+        class="calendar-cell"
+      >
+        <div 
+          *ngFor="let impegno of getImpegniForDayAndHour(day, hour)"
+          class="event"
+          [style.background-color]="getCategoryColor(impegno.categoria)"
+          [class.completed]="impegno.completato"
+        >
+          <div class="event-title">{{ impegno.titolo }}</div>
+          <div class="event-time">
+            {{ impegno.ora_inizio }} - {{ impegno.ora_fine }}
+          </div>
+          <div *ngIf="impegno.completato" class="event-badge">✓ Completato</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="calendar-legend">
+    <h4>Legenda:</h4>
+    <div class="legend-items">
+      <div class="legend-item">
+        <span class="legend-color" style="background: #3b82f6;"></span>
+        Lavoro
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #8b5cf6;"></span>
+        Studio
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #ec4899;"></span>
+        Personale
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #10b981;"></span>
+        Sport
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #6b7280;"></span>
+        Altro
+      </div>
+    </div>
+  </div>
+</div>

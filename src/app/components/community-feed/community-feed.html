@@ -1,0 +1,128 @@
+<div class="community-container">
+  <div class="community-header">
+    <h3>👥 Community</h3>
+    <p>Condividi progressi, obiettivi e motiva gli altri!</p>
+    <button (click)="apriFormPost()" class="btn-nuovo-post">
+      ✍️ Nuovo Post
+    </button>
+  </div>
+
+  <!-- Form nuovo post -->
+  <div *ngIf="isCreatingPost()" class="nuovo-post-card">
+    <div class="post-form-header">
+      <h4>Crea un nuovo post</h4>
+      <button (click)="chiudiFormPost()" class="btn-chiudi">✖</button>
+    </div>
+    
+    <textarea
+      [(ngModel)]="nuovoPost().contenuto"
+      placeholder="Condividi qualcosa con la community..."
+      rows="4"
+      class="post-textarea"
+    ></textarea>
+    
+    <div class="post-form-footer">
+      <select [(ngModel)]="nuovoPost().tipo" class="post-tipo-select">
+        <option value="motivazione">💪 Motivazione</option>
+        <option value="obiettivo">🎯 Obiettivo</option>
+        <option value="successo">🎉 Successo</option>
+        <option value="domanda">❓ Domanda</option>
+      </select>
+      
+      <button 
+        (click)="pubblicaPost()" 
+        [disabled]="!nuovoPost().contenuto.trim()"
+        class="btn-pubblica"
+      >
+        📤 Pubblica
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtri -->
+  <div class="filtri-container">
+    <button
+      (click)="setFiltro('tutti')"
+      [class.active]="filtroAttivo() === 'tutti'"
+      class="filtro-btn"
+    >
+      Tutti
+    </button>
+    <button
+      (click)="setFiltro('obiettivo')"
+      [class.active]="filtroAttivo() === 'obiettivo'"
+      class="filtro-btn"
+    >
+      🎯 Obiettivi
+    </button>
+    <button
+      (click)="setFiltro('successo')"
+      [class.active]="filtroAttivo() === 'successo'"
+      class="filtro-btn"
+    >
+      🎉 Successi
+    </button>
+    <button
+      (click)="setFiltro('motivazione')"
+      [class.active]="filtroAttivo() === 'motivazione'"
+      class="filtro-btn"
+    >
+      💪 Motivazione
+    </button>
+    <button
+      (click)="setFiltro('domanda')"
+      [class.active]="filtroAttivo() === 'domanda'"
+      class="filtro-btn"
+    >
+      ❓ Domande
+    </button>
+  </div>
+
+  <!-- Feed posts -->
+  <div class="posts-feed">
+    <div *ngIf="postsFiltrati.length === 0" class="empty-feed">
+      <p class="empty-icon">📝</p>
+      <p>Nessun post in questa categoria</p>
+      <p class="empty-subtitle">Sii il primo a condividere qualcosa!</p>
+    </div>
+
+    <div *ngFor="let post of postsFiltrati" class="post-card">
+      <!-- Header post -->
+      <div class="post-header">
+        <div class="post-autore">
+          <span class="autore-avatar">{{ post.avatar }}</span>
+          <div class="autore-info">
+            <span class="autore-nome">{{ post.autore }}</span>
+            <span class="post-data">{{ formatDataRelativa(post.data) }}</span>
+          </div>
+        </div>
+        <span class="post-tipo-badge" [class]="'badge-' + post.tipo">
+          {{ getIconaTipo(post.tipo) }} {{ post.tipo | titlecase }}
+        </span>
+      </div>
+
+      <!-- Contenuto post -->
+      <div class="post-contenuto">
+        <p>{{ post.contenuto }}</p>
+      </div>
+
+      <!-- Tags -->
+      <div *ngIf="post.tags && post.tags.length > 0" class="post-tags">
+        <span *ngFor="let tag of post.tags" class="tag">#{{ tag }}</span>
+      </div>
+
+      <!-- Footer con azioni -->
+      <div class="post-footer">
+        <button (click)="likePost(post.id!)" class="post-action">
+          ❤️ {{ post.likes }} Mi piace
+        </button>
+        <button class="post-action">
+          💬 {{ post.commenti }} Commenti
+        </button>
+        <button class="post-action">
+          🔗 Condividi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

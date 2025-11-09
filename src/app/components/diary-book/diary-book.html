@@ -1,0 +1,114 @@
+<div class="diary-container">
+  <div class="diary-header">
+    <h3>📖 Il Mio Diario</h3>
+    <button (click)="startWriting()" class="write-btn">✍️ Scrivi Oggi</button>
+  </div>
+
+  <!-- Libro aperto -->
+  <div class="book" [class.writing]="isWriting()">
+    <div class="book-pages">
+      
+      <!-- Pagina sinistra -->
+      <div class="page left-page" *ngIf="visibleEntries()[0]; else emptyLeft">
+        <div class="page-content">
+          <div class="page-header">
+            <span class="page-date">{{ formatDate(visibleEntries()[0].data) }}</span>
+            <span class="page-mood">{{ getMoodEmoji(visibleEntries()[0].umore) }}</span>
+          </div>
+          <div class="page-text">{{ visibleEntries()[0].contenuto }}</div>
+          <div class="page-tags" *ngIf="visibleEntries()[0]?.tags && visibleEntries()[0]?.tags?.length! > 0">
+            <span *ngFor="let tag of visibleEntries()[0]?.tags" class="tag">#{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #emptyLeft>
+        <div class="page left-page empty">
+          <div class="empty-message">
+            <p>📝</p>
+            <p>Nessuna pagina qui</p>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Divisore centrale -->
+      <div class="book-spine"></div>
+
+      <!-- Pagina destra -->
+      <div class="page right-page" *ngIf="!isWriting()">
+        <div class="page-content" *ngIf="visibleEntries()[1]; else emptyRight">
+          <div class="page-header">
+            <span class="page-date">{{ formatDate(visibleEntries()[1].data) }}</span>
+            <span class="page-mood">{{ getMoodEmoji(visibleEntries()[1].umore) }}</span>
+          </div>
+          <div class="page-text">{{ visibleEntries()[1].contenuto }}</div>
+          <div class="page-tags" *ngIf="visibleEntries()[1]?.tags && visibleEntries()[1]?.tags?.length! > 0">
+            <span *ngFor="let tag of visibleEntries()[1]?.tags" class="tag">#{{ tag }}</span>
+          </div>
+        </div>
+        <ng-template #emptyRight>
+          <div class="empty-message">
+            <p>📝</p>
+            <p>Nessuna pagina qui</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Pagina scrittura -->
+      <div class="page right-page writing-page" *ngIf="isWriting()">
+        <div class="writing-form">
+          <div class="form-header">
+            <h4>✍️ Scrivi il tuo pensiero</h4>
+            <span class="writing-date">{{ formatDate(newEntry().data!) }}</span>
+          </div>
+
+          <textarea
+            [(ngModel)]="newEntry().contenuto"
+            placeholder="Come ti senti oggi? Cosa hai fatto? Cosa hai imparato?..."
+            rows="12"
+            class="writing-textarea"
+          ></textarea>
+
+          <div class="form-group">
+            <label>Come ti senti?</label>
+            <div class="mood-selector">
+              <button
+                *ngFor="let mood of moods"
+                (click)="setMood(mood)"
+                [class.active]="newEntry().umore === mood"
+                class="mood-btn"
+              >
+                {{ getMoodEmoji(mood) }}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button (click)="cancelWriting()" class="btn-cancel">❌ Annulla</button>
+            <button (click)="saveEntry()" class="btn-save" [disabled]="!newEntry().contenuto">
+              💾 Salva
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controlli navigazione -->
+  <div class="book-controls">
+    <button 
+      (click)="previousPage()"
+      [disabled]="!hasPreviousPage()"
+      class="nav-book-btn"
+    >
+      ◀ Indietro
+    </button>
+    <span class="page-number">Pagina {{ currentPage() + 1 }}</span>
+    <button 
+      (click)="nextPage()"
+      [disabled]="!hasNextPage()"
+      class="nav-book-btn"
+    >
+      Avanti ▶
+    </button>
+  </div>
+</div>

@@ -1,0 +1,244 @@
+.calendar-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.calendar-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.calendar-header h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.calendar-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-btn, .today-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover, .today-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.today-btn {
+  background: white;
+  color: #667eea;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  overflow-x: auto;
+}
+
+.header-cell {
+  grid-column: 1;
+  background: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 2px solid #667eea;
+}
+
+.day-header {
+  background: #f8f9fa;
+  padding: 1rem;
+  text-align: center;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 2px solid #667eea;
+}
+
+.day-header.today {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border-bottom-color: #667eea;
+}
+
+.day-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.day-date {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.time-cell {
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  background: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-cell {
+  min-height: 60px;
+  padding: 0.5rem;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.calendar-cell:hover {
+  background: #f8f9fa;
+}
+
+.calendar-cell.current-hour {
+  background: rgba(102, 126, 234, 0.05);
+  border: 2px solid #667eea;
+}
+
+.event {
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.event:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.event.completed {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+.event-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.event-time {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.event-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+.calendar-legend {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.calendar-legend h4 {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.legend-items {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .calendar-container {
+  background: #1e1e1e;
+}
+
+[data-theme="dark"] .header-cell,
+[data-theme="dark"] .day-header,
+[data-theme="dark"] .time-cell {
+  background: #2c2c2c;
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .day-name {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .calendar-cell {
+  border-color: #3a3a3a;
+}
+
+[data-theme="dark"] .calendar-cell:hover {
+  background: #2c2c2c;
+}
+
+[data-theme="dark"] .calendar-legend {
+  background: #2c2c2c;
+  border-top-color: #3a3a3a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calendar-grid {
+    font-size: 0.8rem;
+  }
+  
+  .day-header {
+    padding: 0.5rem;
+  }
+  
+  .calendar-cell {
+    min-height: 50px;
+    padding: 0.25rem;
+  }
+  
+  .event {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+  }
+  
+  .legend-items {
+    gap: 0.75rem;
+  }
+}
+

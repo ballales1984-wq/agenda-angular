@@ -1,0 +1,74 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h3>💬 Chat Intelligente</h3>
+    <p>Scrivi in linguaggio naturale, penso a tutto io!</p>
+  </div>
+
+  <div class="chat-messages">
+    <div 
+      *ngFor="let msg of messages()" 
+      class="message"
+      [class.user-message]="msg.sender === 'user'"
+      [class.assistant-message]="msg.sender === 'assistant'"
+      [class.success]="msg.type === 'success'"
+      [class.error]="msg.type === 'error'"
+      [class.info]="msg.type === 'info'"
+    >
+      <div class="message-content">
+        <div class="message-avatar">
+          {{ msg.sender === 'user' ? '👤' : '🤖' }}
+        </div>
+        <div class="message-bubble">
+          <p>{{ msg.text }}</p>
+          <span class="message-time">
+            {{ msg.timestamp | date:'HH:mm' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading()" class="message assistant-message">
+      <div class="message-content">
+        <div class="message-avatar">🤖</div>
+        <div class="message-bubble loading">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="suggestions">
+    <p class="suggestions-label">💡 Prova questi esempi:</p>
+    <div class="suggestions-grid">
+      <button 
+        *ngFor="let suggestion of suggestions"
+        (click)="useSuggestion(suggestion)"
+        class="suggestion-btn"
+      >
+        {{ suggestion }}
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <textarea
+      [(ngModel)]="userInput"
+      (keypress)="onKeyPress($event)"
+      placeholder="Scrivi qualcosa... (es: 'Domani riunione alle 10')"
+      rows="2"
+      [disabled]="isLoading()"
+    ></textarea>
+    <button 
+      (click)="sendMessage()"
+      [disabled]="!userInput() || isLoading()"
+      class="send-btn"
+    >
+      <span *ngIf="!isLoading()">📤 Invia</span>
+      <span *ngIf="isLoading()">⏳</span>
+    </button>
+  </div>
+</div>

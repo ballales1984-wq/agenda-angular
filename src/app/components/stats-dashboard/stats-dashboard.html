@@ -1,0 +1,55 @@
+<div class="stats-container">
+  <h3>📊 Le Tue Statistiche</h3>
+  
+  <div class="stats-grid">
+    <!-- Impegni -->
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <h4>Impegni</h4>
+        <div class="stat-number">{{ totalImpegni() }}</div>
+        <div class="stat-detail">
+          {{ impegniCompletati() }} completati ({{ percentualeImpegni() }}%)
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="percentualeImpegni()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Obiettivi -->
+    <div class="stat-card">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <h4>Obiettivi</h4>
+        <div class="stat-number">{{ totalObiettivi() }}</div>
+        <div class="stat-detail">
+          {{ obiettiviCompletati() }} completati ({{ percentualeObiettivi() }}%)
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="percentualeObiettivi()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diario -->
+    <div class="stat-card">
+      <div class="stat-icon">📖</div>
+      <div class="stat-content">
+        <h4>Diario</h4>
+        <div class="stat-number">{{ entriesDiario() }}</div>
+        <div class="stat-detail">entries scritte</div>
+      </div>
+    </div>
+
+    <!-- Spese -->
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h4>Spese</h4>
+        <div class="stat-number">€{{ sommaSpese() }}</div>
+        <div class="stat-detail">{{ totalSpese() }} transazioni</div>
+      </div>
+    </div>
+  </div>
+</div>

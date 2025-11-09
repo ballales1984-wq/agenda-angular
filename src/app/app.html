@@ -1,0 +1,86 @@
+<div class="app-container" [attr.data-theme]="themeService.isDarkMode() ? 'dark' : 'light'">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <h1>🧠 Assistente Intelligente</h1>
+      <p>Il tuo compagno AI per organizzare vita, studio e obiettivi</p>
+    </div>
+    <button class="theme-toggle" (click)="themeService.toggleTheme()">
+      {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
+    </button>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <button
+      (click)="setView('chat')"
+      [class.active]="activeView() === 'chat'"
+      class="nav-btn"
+    >
+      💬 Chat
+    </button>
+    <button
+      (click)="setView('calendar')"
+      [class.active]="activeView() === 'calendar'"
+      class="nav-btn"
+    >
+      📅 Calendario
+    </button>
+    <button
+      (click)="setView('diary')"
+      [class.active]="activeView() === 'diary'"
+      class="nav-btn"
+    >
+      📖 Diario
+    </button>
+    <button
+      (click)="setView('community')"
+      [class.active]="activeView() === 'community'"
+      class="nav-btn"
+    >
+      👥 Community
+    </button>
+    <button
+      (click)="setView('stats')"
+      [class.active]="activeView() === 'stats'"
+      class="nav-btn"
+    >
+      📊 Statistiche
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <!-- Chat View -->
+      <div *ngIf="activeView() === 'chat'" class="view-container">
+        <app-chat-interface></app-chat-interface>
+      </div>
+
+      <!-- Calendar View -->
+      <div *ngIf="activeView() === 'calendar'" class="view-container">
+        <app-calendar-view></app-calendar-view>
+      </div>
+
+      <!-- Diary View -->
+      <div *ngIf="activeView() === 'diary'" class="view-container">
+        <app-diary-book></app-diary-book>
+      </div>
+
+      <!-- Community View -->
+      <div *ngIf="activeView() === 'community'" class="view-container">
+        <app-community-feed></app-community-feed>
+      </div>
+
+      <!-- Stats View -->
+      <div *ngIf="activeView() === 'stats'" class="view-container">
+        <app-stats-dashboard></app-stats-dashboard>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Powered by Angular 19 & TypeScript | Versione modernizzata con architettura separata frontend/backend</p>
+  </footer>
+</div>
