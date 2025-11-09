@@ -1,0 +1,61 @@
+<div class="mood-analytics-container">
+  <div class="analytics-header">
+    <h3>📊 Mood Analytics</h3>
+    <p>Analisi dell'umore basata sul tuo diario</p>
+  </div>
+
+  <!-- Umore prevalente -->
+  <div class="mood-hero">
+    <div class="hero-icon">{{ moodPrevalente().emoji }}</div>
+    <div class="hero-text">
+      <h2>Il tuo umore prevalente</h2>
+      <p class="hero-mood">{{ moodPrevalente().umore }}</p>
+      <p class="hero-percent">{{ moodPrevalente().percentuale }}% del tempo</p>
+    </div>
+  </div>
+
+  <!-- Statistiche umore -->
+  <div class="mood-stats">
+    <div 
+      *ngFor="let stat of moodStats()"
+      class="mood-stat-card"
+    >
+      <span class="stat-emoji">{{ getMoodEmoji(stat.umore) }}</span>
+      <div class="stat-info">
+        <span class="stat-label">{{ stat.umore }}</span>
+        <div class="stat-bar-container">
+          <div 
+            class="stat-bar" 
+            [style.width.%]="stat.percentuale"
+            [style.background-color]="getColorByMood(stat.umore)"
+          ></div>
+        </div>
+        <span class="stat-value">{{ stat.count }} volte ({{ stat.percentuale }}%)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafico trend -->
+  <div class="chart-section" *ngIf="moodTrend().length > 0">
+    <h4>📈 Trend Umore (Ultimi 30 giorni)</h4>
+    <div class="chart-container">
+      <canvas id="moodChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Messaggio se non ci sono dati -->
+  <div class="empty-state" *ngIf="moodTrend().length === 0">
+    <p class="empty-icon">📝</p>
+    <p>Scrivi più pagine nel diario per vedere il trend del tuo umore!</p>
+  </div>
+
+  <!-- AI Insights -->
+  <div class="insights-section">
+    <h4>💡 AI Insights</h4>
+    <div class="insights-list">
+      <div *ngFor="let insight of insights()" class="insight-card">
+        <span class="insight-text">{{ insight }}</span>
+      </div>
+    </div>
+  </div>
+</div>
