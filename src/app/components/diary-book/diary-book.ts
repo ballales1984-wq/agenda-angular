@@ -171,6 +171,25 @@ export class DiaryBook {
     this.toastService.success(`Diario esportato! ${entries.length} pagine salvate in PDF.`);
   }
   
+  // DETTATURA NEL DIARIO
+  async dettaNelDiario() {
+    try {
+      const text = await this.speechService.startListening('it');
+      
+      if (text && text.trim()) {
+        // Aggiungi al contenuto esistente
+        this.newEntry.update(entry => ({
+          ...entry,
+          contenuto: entry.contenuto ? entry.contenuto + ' ' + text : text
+        }));
+        
+        this.toastService.success('✅ Testo aggiunto!');
+      }
+    } catch (error) {
+      this.toastService.error(`Errore: ${error}`);
+    }
+  }
+  
   // ===== SWIPE & SCROLL HANDLING =====
   
   // Touch start

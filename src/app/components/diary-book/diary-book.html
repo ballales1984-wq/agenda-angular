@@ -84,12 +84,26 @@
             <span class="writing-date">{{ formatDate(newEntry().data!) }}</span>
           </div>
 
-          <textarea
-            [(ngModel)]="newEntry().contenuto"
-            placeholder="Come ti senti oggi? Cosa hai fatto? Cosa hai imparato?..."
-            rows="12"
-            class="writing-textarea"
-          ></textarea>
+          <div class="textarea-container">
+            <textarea
+              [(ngModel)]="newEntry().contenuto"
+              placeholder="Come ti senti oggi? Cosa hai fatto? Cosa hai imparato?..."
+              rows="12"
+              class="writing-textarea"
+            ></textarea>
+            
+            <button
+              *ngIf="speechService.isRecognitionSupported()"
+              (click)="dettaNelDiario()"
+              [disabled]="speechService.isListening()"
+              class="diary-mic-btn"
+              [class.listening]="speechService.isListening()"
+              title="Detta invece di scrivere"
+            >
+              <span *ngIf="!speechService.isListening()">🎤</span>
+              <span *ngIf="speechService.isListening()">🔴</span>
+            </button>
+          </div>
 
           <div class="form-group">
             <label>Come ti senti?</label>
