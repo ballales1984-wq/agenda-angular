@@ -106,8 +106,18 @@ export class DiaryBook {
   saveEntry() {
     const entry = this.newEntry();
     if (entry.contenuto && entry.contenuto.trim()) {
-      // TODO: Chiamata API
-      console.log('Saving entry:', entry);
+      // SALVA DAVVERO NEL DIARIO!
+      const nuovaEntry = {
+        id: Date.now(),
+        data: entry.data || new Date(),
+        contenuto: entry.contenuto,
+        umore: entry.umore || 'neutro',
+        tags: entry.tags || []
+      };
+      
+      this.apiService.diario.update(diario => [...diario, nuovaEntry]);
+      this.toastService.success(`✅ Pagina diario salvata! Totale: ${this.apiService.diario().length} pagine`);
+      
       this.isWriting.set(false);
       this.newEntry.set({
         data: new Date(),
@@ -115,6 +125,8 @@ export class DiaryBook {
         umore: 'neutro',
         tags: []
       });
+    } else {
+      this.toastService.warning('Scrivi qualcosa prima di salvare!');
     }
   }
   
