@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './services/theme';
+import { LanguageService } from './services/language';
 import { ChatInterface } from './components/chat-interface/chat-interface';
 import { CalendarView } from './components/calendar-view/calendar-view';
 import { DiaryBook } from './components/diary-book/diary-book';
@@ -19,7 +20,10 @@ export class App {
   // Vista attiva
   activeView = signal<'chat' | 'calendar' | 'diary' | 'stats' | 'community'>('chat');
   
-  constructor(public themeService: ThemeService) {}
+  constructor(
+    public themeService: ThemeService,
+    public langService: LanguageService
+  ) {}
   
   // Cambia vista
   setView(view: 'chat' | 'calendar' | 'diary' | 'stats' | 'community') {

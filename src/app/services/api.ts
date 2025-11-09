@@ -20,7 +20,11 @@ export class ApiService {
   public spese = signal<Spesa[]>([]);
   
   constructor(private http: HttpClient) {
-    this.loadDemoData();
+    // Carica da localStorage se presente, altrimenti usa demo data
+    this.loadFromLocalStorage();
+    
+    // Salva automaticamente quando cambiano i dati
+    this.setupAutoSave();
   }
   
   // Metodo per impostare l'URL dell'API
@@ -259,5 +263,47 @@ export class ApiService {
   
   sendMessage(message: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl()}/chat`, { message });
+  }
+  
+  // ===== PERSISTENZA LOCALE =====
+  
+  private setupAutoSave() {
+    // Salva impegni quando cambiano
+    setInterval(() => {
+      this.saveToLocalStorage();
+    }, 5000); // Salva ogni 5 secondi
+  }
+  
+  private saveToLocalStorage() {
+    try {
+      localStorage.setItem('agenda_impegni', JSON.stringify(this.impegni()));
+      localStorage.setItem('agenda_diario', JSON.stringify(this.diario()));
+      localStorage.setItem('agenda_obiettivi', JSON.stringify(this.obiettivi()));
+      localStorage.setItem('agenda_spese', JSON.stringify(this.spese()));
+    } catch (e) {
+      console.error('Errore nel salvare i dati:', e);
+    }
+  }
+  
+  private loadFromLocalStorage() {
+    try {
+      const impegni = localStorage.getItem('agenda_impegni');
+      const diario = localStorage.getItem('agenda_diario');
+      const obiettivi = localStorage.getItem('agenda_obiettivi');
+      const spese = localStorage.getItem('agenda_spese');
+      
+      if (impegni) {
+        this.impegni.set(JSON.parse(impegni));
+      } else {
+        this.loadDemoData();
+      }
+      
+      if (diario) this.diario.set(JSON.parse(diario));
+      if (obiettivi) this.obiettivi.set(JSON.parse(obiettivi));
+      if (spese) this.spese.set(JSON.parse(spese));
+    } catch (e) {
+      console.error('Errore nel caricare i dati:', e);
+      this.loadDemoData();
+    }
   }
 }

@@ -2,12 +2,17 @@
   <!-- Header -->
   <header class="app-header">
     <div class="header-content">
-      <h1>🧠 Assistente Intelligente</h1>
-      <p>Il tuo compagno AI per organizzare vita, studio e obiettivi</p>
+      <h1>🧠 {{ langService.t('app.title') }}</h1>
+      <p>{{ langService.t('app.subtitle') }}</p>
     </div>
-    <button class="theme-toggle" (click)="themeService.toggleTheme()">
-      {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
-    </button>
+    <div class="header-controls">
+      <button class="lang-toggle" (click)="langService.toggleLanguage()" title="Change language">
+        {{ langService.currentLang() === 'it' ? '🇬🇧 EN' : '🇮🇹 IT' }}
+      </button>
+      <button class="theme-toggle" (click)="themeService.toggleTheme()" title="Toggle dark mode">
+        {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
+      </button>
+    </div>
   </header>
 
   <!-- Navigation -->
