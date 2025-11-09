@@ -65,45 +65,97 @@ export class ChatInterface {
     this.processMessage(message);
   }
   
-  // Processa il messaggio (demo con pattern locali)
+  // Processa il messaggio (demo con pattern locali migliorato)
   private processMessage(message: string) {
     const lower = message.toLowerCase();
     
     setTimeout(() => {
       let response: ChatMessage;
       
-      // Pattern recognition locale (demo)
-      if (lower.includes('riunione') || lower.includes('appuntamento')) {
+      // Pattern recognition locale (demo migliorato)
+      if (lower.includes('agenda') || lower.includes('calendario') || lower.includes('impegno')) {
+        // Riconosce impegni nel calendario
+        const timePattern = /(\d{1,2}):(\d{2})|(\d{1,2})\s*(del|alle)/i;
+        const dayPattern = /(domani|dopodomani|lunedì|martedì|mercoledì|giovedì|venerdì|sabato|domenica)/i;
+        
+        let details = '';
+        if (timePattern.test(message)) {
+          const match = message.match(/(\d{1,2}):(\d{2})/);
+          if (match) details = ` alle ${match[0]}`;
+        }
+        
+        let when = 'oggi';
+        const dayMatch = message.match(dayPattern);
+        if (dayMatch) when = dayMatch[0];
+        
         response = {
-          text: '✅ Perfetto! Ho capito che vuoi aggiungere un impegno. L\'ho inserito nel calendario!',
+          text: `✅ Perfetto! Ho aggiunto l'impegno "${message}"${details} per ${when} nel calendario! Vai su 📅 Calendario per vederlo.`,
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('studiare') || lower.includes('obiettivo')) {
+      } else if (lower.includes('riunione') || lower.includes('appuntamento') || lower.includes('meeting')) {
         response = {
-          text: '🎯 Grande! Ho creato un nuovo obiettivo per te. Lo trovi nella sezione obiettivi!',
+          text: '✅ Impegno aggiunto al calendario! Vai su 📅 Calendario per vedere tutti i tuoi impegni della settimana.',
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('speso') || lower.includes('spesa') || lower.includes('€') || lower.includes('euro')) {
+      } else if (lower.includes('studiare') || lower.includes('imparare') || lower.includes('corso')) {
         response = {
-          text: '💰 Spesa registrata! La troverai nelle statistiche.',
+          text: '🎯 Fantastico! Ho creato un obiettivo di studio per te. Controlla la sezione 📊 Statistiche per vedere il progresso!',
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
         };
-      } else if (lower.includes('oggi') || lower.includes('sento') || lower.includes('giornata')) {
+      } else if (lower.includes('speso') || lower.includes('spesa') || lower.includes('€') || lower.includes('euro') || lower.includes('pagato')) {
+        const amountMatch = message.match(/(\d+)\s*€|€\s*(\d+)|(\d+)\s*euro/i);
+        const amount = amountMatch ? (amountMatch[1] || amountMatch[2] || amountMatch[3]) : '';
+        
         response = {
-          text: '📖 Ho salvato la tua riflessione nel diario. Grazie per aver condiviso!',
+          text: `💰 Spesa${amount ? ' di €' + amount : ''} registrata con successo! Vai su 📊 Statistiche per vedere i grafici delle spese.`,
           sender: 'assistant',
           timestamp: new Date(),
           type: 'success'
+        };
+      } else if (lower.includes('diario') || lower.includes('oggi') || lower.includes('sento') || lower.includes('giornata') || lower.includes('pensiero')) {
+        response = {
+          text: '📖 Ho salvato la tua riflessione nel diario! Vai su 📖 Diario per rileggere tutti i tuoi pensieri. Puoi anche sfogliare con swipe o ascoltarli con 🔊 Leggi!',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'success'
+        };
+      } else if (lower.includes('abitudine') || lower.includes('habit') || lower.includes('routine')) {
+        response = {
+          text: '✨ Ottima idea! Vai su ✨ Abitudini per tracciare le tue routine giornaliere e costruire streak! 🔥',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'success'
+        };
+      } else if (lower.includes('pomodoro') || lower.includes('timer') || lower.includes('concentr')) {
+        response = {
+          text: '🍅 Vuoi essere più produttivo? Usa il Pomodoro Timer! 25 minuti di focus + 5 di pausa. Vai su 🍅 Pomodoro!',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'success'
+        };
+      } else if (lower.includes('cerca') || lower.includes('trova') || lower.includes('ricerca')) {
+        response = {
+          text: '🔍 Usa il bottone di ricerca in basso a destra (🔍) per cercare in tutto: impegni, diario, obiettivi e community!',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'info'
+        };
+      } else if (lower.includes('ciao') || lower.includes('salve') || lower.includes('buongiorno')) {
+        response = {
+          text: '👋 Ciao! Come posso aiutarti oggi? Posso aiutarti a organizzare impegni, obiettivi, diario, abitudini e molto altro!',
+          sender: 'assistant',
+          timestamp: new Date(),
+          type: 'info'
         };
       } else {
         response = {
-          text: 'Ho capito! Puoi dirmi di più o provare con uno dei suggerimenti qui sotto:',
+          text: 'Ho capito! 💡 Puoi chiedermi di:\n• Aggiungere impegni al calendario 📅\n• Creare obiettivi di studio/lavoro 🎯\n• Registrare spese 💰\n• Scrivere nel diario 📖\n• Tracciare abitudini ✨\n\nProva uno dei suggerimenti qui sotto!',
           sender: 'assistant',
           timestamp: new Date(),
           type: 'info'
