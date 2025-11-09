@@ -132,7 +132,7 @@
 
           <div class="form-actions">
             <button (click)="cancelWriting()" class="btn-cancel">{{ langService.t('diary.cancel') }}</button>
-            <button (click)="saveEntry()" class="btn-save" [disabled]="!newEntry().contenuto">
+            <button (click)="saveEntry()" class="btn-save">
               {{ langService.t('diary.save') }}
             </button>
           </div>
